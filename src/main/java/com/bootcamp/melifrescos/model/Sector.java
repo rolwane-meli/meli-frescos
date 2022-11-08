@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "sectors")
@@ -31,4 +32,8 @@ public class Sector {
     @JoinColumn(name = "idWarehouse")
     @JsonIgnoreProperties("sectors")
     private Warehouse warehouse;
+
+    @OneToMany(mappedBy = "sector")
+    @JsonIgnoreProperties("sector")
+    private List<InboundOrder> inboundOrders;
 }
