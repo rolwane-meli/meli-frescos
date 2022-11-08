@@ -1,6 +1,7 @@
 package com.bootcamp.melifrescos.model;
 
 import com.bootcamp.melifrescos.enums.Type;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,7 +23,12 @@ public class Sector {
 
     @Column(nullable = false)
     private Double capacity;
-    
+
     @Enumerated(EnumType.STRING)
     private Type type;
+
+    @ManyToOne
+    @JoinColumn(name = "idWarehouse")
+    @JsonIgnoreProperties("sectors")
+    private Warehouse warehouse;
 }

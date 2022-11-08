@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "warehouses")
@@ -24,4 +25,8 @@ public class Warehouse {
     @JoinColumn(name = "idRepresentative")
     @JsonIgnoreProperties("warehouse")
     private Representative representative;
+
+    @OneToMany(mappedBy = "warehouse")
+    @JsonIgnoreProperties("warehouse")
+    private List<Sector> sectors;
 }
