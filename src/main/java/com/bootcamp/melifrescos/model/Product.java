@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -29,4 +30,8 @@ public class Product {
     @JoinColumn(name = "idSeller")
     @JsonIgnoreProperties("products")
     private Seller seller;
+
+    @OneToMany(mappedBy = "product")
+    @JsonIgnoreProperties("product")
+    private List<Batch> batches;
 }

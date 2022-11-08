@@ -23,7 +23,7 @@ public class Sector {
     private String name;
 
     @Column(nullable = false)
-    private Double capacity;
+    private double capacity;
 
     @Enumerated(EnumType.STRING)
     private Type type;
