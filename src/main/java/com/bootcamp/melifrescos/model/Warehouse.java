@@ -8,11 +8,11 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "representatives")
+@Table(name = "warehouses")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Representative {
+public class Warehouse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,13 +20,8 @@ public class Representative {
     @Column(length = 45, nullable = false)
     private String name;
 
-    @Column(length = 45, nullable = false)
-    private String email;
-
-    @Column(length = 11, nullable = false)
-    private String cpf;
-
-    @OneToOne(mappedBy = "representative")
-    @JsonIgnoreProperties("representative")
-    private Warehouse warehouse;
+    @OneToOne
+    @JoinColumn(name = "idRepresentative")
+    @JsonIgnoreProperties("warehouse")
+    private Representative representative;
 }
