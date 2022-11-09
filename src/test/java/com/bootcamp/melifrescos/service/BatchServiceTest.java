@@ -1,0 +1,96 @@
+package com.bootcamp.melifrescos.service;
+
+import com.bootcamp.melifrescos.dto.BatchDTO;
+import com.bootcamp.melifrescos.enums.Type;
+import com.bootcamp.melifrescos.exceptions.BatchNotExistException;
+import com.bootcamp.melifrescos.interfaces.IProductService;
+import com.bootcamp.melifrescos.model.Batch;
+import com.bootcamp.melifrescos.model.Product;
+import com.bootcamp.melifrescos.model.Seller;
+import com.bootcamp.melifrescos.repository.IBatchRepo;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@ExtendWith(MockitoExtension.class)
+public class BatchServiceTest {
+    @InjectMocks
+    private BatchService service;
+
+    @Mock
+    private IProductService productService;
+
+    @Mock
+    private IBatchRepo repo;
+
+    private Batch batch;
+
+    private BatchDTO batchDTO;
+
+    private Product product;
+
+    @BeforeEach
+    void setup() {
+        product = new Product(1L, "Leite", Type.REFRIGERATED, new Seller(), null);
+        batchDTO = new BatchDTO(null, 1L, -13.00, 5, LocalDate.now(), LocalTime.now(), 30.00, LocalDateTime.now(), new BigDecimal(7));
+        batch = new Batch(1L, -13.00, 5, LocalDate.now(), LocalTime.now(), 30.00, LocalDateTime.now(), new BigDecimal(7), product, null);
+    }
+
+    @Test
+    void create_returnBatch_whenCaseOfSuccess(){
+        Mockito.when(productService.getById(ArgumentMatchers.anyLong()))
+                .thenReturn(Optional.of(product));
+
+        BDDMockito.when(repo.save(ArgumentMatchers.any(Batch.class)))
+                .thenReturn(batch);
+
+        Batch resultBatch = service.create(batchDTO);
+
+        assertThat(resultBatch).isNotNull();
+        assertThat(resultBatch.getId()).isPositive();
+        assertThat(resultBatch).isEqualTo(batch);
+    }
+
+    @Test
+    void create_returnException_whenFailureCase() {
+        Mockito.when(productService.getById(ArgumentMatchers.anyLong()))
+                .thenReturn(null);
+
+        assertThrows(RuntimeException.class,() ->  {
+            service.create(batchDTO);
+        });
+    }
+
+    @Test
+    void getById_returnBatch_whenBatchExist() throws BatchNotExistException {
+        Mockito.when(repo.findById(ArgumentMatchers.anyLong()))
+                .thenReturn(Optional.of(batch));
+
+        Batch resultBatch = service.getById(1L).get();
+
+        assertThat(resultBatch).isNotNull();
+        assertThat(resultBatch).isEqualTo(batch);
+        assertThat(resultBatch.getId()).isPositive();
+    }
+
+    @Test
+    void getById_returnException_whenBatchNotExist(){
+        Mockito.when(repo.findById(ArgumentMatchers.anyLong()))
+                .thenReturn(Optional.empty());
+
+        assertThrows(BatchNotExistException.class, () -> {
+            service.getById(999L);
+        });
+    }
+}

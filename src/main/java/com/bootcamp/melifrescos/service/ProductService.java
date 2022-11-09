@@ -8,6 +8,8 @@ import com.bootcamp.melifrescos.repository.IProductRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class ProductService implements IProductService {
@@ -30,5 +32,10 @@ public class ProductService implements IProductService {
 
         Product newProduct = new Product(null, product.getName(),product.getType(), seller,null);
         return repo.save(newProduct);
+    }
+
+    @Override
+    public Optional<Product> getById(Long id) {
+        return repo.findById(id);
     }
 }
