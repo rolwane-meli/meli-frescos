@@ -16,4 +16,14 @@ public class SellerService implements ISellerService {
     public Seller create(Seller seller) {
         return repo.save(seller);
     }
+
+    /**
+     * Método responsável por buscar um vendedor por id
+     * @param id Id do vendedor
+     * @return Vendedor
+     */
+    @Override
+    public Seller getById(Long id) {
+        return repo.findById(id).orElse(null);
+    }
 }
