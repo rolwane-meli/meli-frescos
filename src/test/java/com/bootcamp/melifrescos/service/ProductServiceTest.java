@@ -5,17 +5,16 @@ import com.bootcamp.melifrescos.enums.Type;
 import com.bootcamp.melifrescos.model.Product;
 import com.bootcamp.melifrescos.model.Seller;
 import com.bootcamp.melifrescos.repository.IProductRepo;
-import com.bootcamp.melifrescos.repository.ISellerRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
@@ -23,18 +22,17 @@ public class ProductServiceTest {
     @InjectMocks
     private ProductService service;
 
-    @InjectMocks
+    @Mock
     private SellerService serviceSeller;
 
     @Mock
     private IProductRepo repo;
 
-    @Mock
-    private ISellerRepo repoSeller;
-
     private Product product;
 
     private ProductRequestDTO productRequestDTO;
+
+    private ProductRequestDTO productRequestDTOFail;
     private Seller seller;
 
     @BeforeEach
@@ -42,6 +40,7 @@ public class ProductServiceTest {
         seller = new Seller(1L,"joao","31999999999","joao@email.com","12345678912345",null);
         product = new Product(1L,"leite", Type.REFRIGERATED,seller,null);
         productRequestDTO = new ProductRequestDTO("leite",Type.REFRIGERATED,1L);
+        productRequestDTOFail = new ProductRequestDTO("leite",Type.REFRIGERATED,2L);
     }
 
     @Test
@@ -54,6 +53,16 @@ public class ProductServiceTest {
 
         Product product1 = service.create(productRequestDTO);
 
-        assertThat(product1.getName()).isEqualTo(productRequestDTO.getName());
+        assertThat(product1.getName()).isEqualTo("leite");
+    }
+
+    @Test
+    void create_returnException_whenFailureCase() {
+        Mockito.when(serviceSeller.getById(ArgumentMatchers.anyLong()))
+                .thenReturn(null);
+
+        assertThrows(RuntimeException.class,() ->  {
+            service.create(productRequestDTOFail);
+        });
     }
 }
