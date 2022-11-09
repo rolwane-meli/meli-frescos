@@ -16,4 +16,9 @@ public class SellerService implements ISellerService {
     public Seller create(Seller seller) {
         return repo.save(seller);
     }
+
+    @Override
+    public Seller getById(Long id) {
+        return repo.findById(id).orElse(null);
+    }
 }
