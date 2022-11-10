@@ -20,6 +20,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties("products")
 public class Seller {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
