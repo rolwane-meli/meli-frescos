@@ -40,5 +40,7 @@ public class WarehouseService implements IWarehouseService {
     }
 
     @Override
-    public Optional<Warehouse> getById(Long id) { return repo.findById(id); }
+    public Optional<Warehouse> getById(Long id) {
+        return repo.findById(id);
+    }
 }
