@@ -1,6 +1,7 @@
 package com.bootcamp.melifrescos.model;
 
 import com.bootcamp.melifrescos.enums.Type;
+import com.bootcamp.melifrescos.util.ValueOfEnum;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,6 +32,7 @@ public class Sector {
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "O tipo é obrigatório.")
+    @ValueOfEnum(enumClass = Type.class, message = "Tipo não identificado")
     private Type type;
 
     @ManyToOne

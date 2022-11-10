@@ -6,13 +6,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FiledError {
-    private String field;
     private String message;
-    private String rejectedValue;
 
-    public FiledError(String field, String message, String rejectedValue) {
-        this.field = field;
+    public FiledError(String message) {
         this.message = message;
-        this.rejectedValue = rejectedValue;
     }
 }

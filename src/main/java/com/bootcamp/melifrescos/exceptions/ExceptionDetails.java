@@ -3,6 +3,7 @@ package com.bootcamp.melifrescos.exceptions;
 import com.bootcamp.melifrescos.model.FiledError;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -13,5 +14,6 @@ import java.util.List;
 public class ExceptionDetails {
     private String title;
     private String message;
+    private LocalDateTime timesTemp;
     private List<FiledError> errors;
 }

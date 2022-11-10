@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
@@ -24,18 +22,14 @@ public class Product {
     private Long id;
 
     @Column(length = 100, nullable = false)
-    @NotBlank(message = "O nome é obrigatório.")
     private String name;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "O tipo é obrigatório")
     private Type type;
-
     @ManyToOne
     @JoinColumn(name = "idSeller")
     @JsonIgnoreProperties("products")
-    @NotNull(message = "O vendedor é obrigatório.")
     private Seller seller;
 
     @OneToMany(mappedBy = "product")

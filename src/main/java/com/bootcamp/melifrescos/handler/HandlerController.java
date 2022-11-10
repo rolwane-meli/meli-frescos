@@ -4,12 +4,14 @@ import com.bootcamp.melifrescos.exceptions.ExceptionDetails;
 import com.bootcamp.melifrescos.model.FiledError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.validation.UnexpectedTypeException;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
@@ -19,12 +21,13 @@ public class HandlerController {
     public ResponseEntity<ExceptionDetails> handleValidPost(MethodArgumentNotValidException ex) {
 
         List<FiledError> errors = ex.getFieldErrors().stream()
-                .map((erro) -> new FiledError(erro.getField(), erro.getDefaultMessage(), Objects.requireNonNull(erro.getRejectedValue())
-                        .toString())).collect(Collectors.toList());
+                .map((erro) -> new FiledError(erro.getDefaultMessage()))
+                        .collect(Collectors.toList());
 
         ExceptionDetails exceptionDetails = ExceptionDetails.builder()
                 .title("BAD REQUEST")
-                .message("Argumentos inválidos.")
+                .message("Argumentos da requisição inválidos.")
+                .timesTemp(LocalDateTime.now())
                 .errors(errors)
                 .build();
 
