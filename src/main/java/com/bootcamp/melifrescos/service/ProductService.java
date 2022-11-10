@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,5 +34,10 @@ public class ProductService implements IProductService {
 
         Product newProduct = new Product(null, product.getName(), Type.fromValue(product.getType()), seller,null);
         return repo.save(newProduct);
+    }
+
+    @Override
+    public Optional<Product> getById(Long id) {
+        return repo.findById(id);
     }
 }
