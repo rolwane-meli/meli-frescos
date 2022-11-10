@@ -2,6 +2,7 @@ package com.bootcamp.melifrescos.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import lombok.Getter;
@@ -19,14 +20,11 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class InboundOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(length = 11, nullable = false)
-    @NotNull(message = "O número da ordem é obrigatório.")
-    private int orderNumber;
 
     @Column(nullable = false)
     @NotNull(message = "O dia da ordem é obrigatório.")

@@ -74,6 +74,5 @@ public class Batch {
     @ManyToOne
     @JoinColumn(name = "idInboundOrder")
     @JsonIgnoreProperties("batches")
-    @NotNull(message = "O pedido entrada é obrigatório.")
     private InboundOrder inboundOrder;
 }

@@ -4,9 +4,7 @@ import com.bootcamp.melifrescos.dto.BatchDTO;
 import com.bootcamp.melifrescos.enums.Type;
 import com.bootcamp.melifrescos.exceptions.BatchNotExistException;
 import com.bootcamp.melifrescos.interfaces.IProductService;
-import com.bootcamp.melifrescos.model.Batch;
-import com.bootcamp.melifrescos.model.Product;
-import com.bootcamp.melifrescos.model.Seller;
+import com.bootcamp.melifrescos.model.*;
 import com.bootcamp.melifrescos.repository.IBatchRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,12 +36,14 @@ public class BatchServiceTest {
     private BatchDTO batchDTO;
     private List<Batch> batchList = new ArrayList<>();
     private Product product;
+    private InboundOrder inboundOrder;
 
     @BeforeEach
     void setup() {
         product = new Product(1L, "Leite", Type.REFRIGERATED, new Seller(), null);
         batchDTO = new BatchDTO(null, 1L, -13.00, 5, LocalDate.now(), LocalTime.now(), 30.00, LocalDateTime.now(), new BigDecimal(7));
-        batch = new Batch(1L, -13.00, 5, LocalDate.now(), LocalTime.now(), 30.00, LocalDateTime.now(), new BigDecimal(7), product, null);
+        batch = new Batch(1L, 8.00, 5, LocalDate.now(), LocalTime.now(), 30.00, LocalDateTime.now(), new BigDecimal(7), product, null);
+        inboundOrder = new InboundOrder(1L,LocalDateTime.now(),new Sector(),null);
         batchList.add(batch);
     }
 
@@ -83,7 +83,7 @@ public class BatchServiceTest {
         List<BatchDTO> batchDTOList = new ArrayList<>();
         batchDTOList.add(batchDTO);
 
-        List<Batch> resultBatch = service.createAll(batchDTOList);
+        List<Batch> resultBatch = service.createAll(batchDTOList, inboundOrder);
 
         assertThat(resultBatch).isNotNull();
         assertThat(resultBatch.get(0)).isEqualTo(batchList.get(0));

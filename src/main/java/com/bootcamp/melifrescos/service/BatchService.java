@@ -5,6 +5,7 @@ import com.bootcamp.melifrescos.exceptions.BatchNotExistException;
 import com.bootcamp.melifrescos.interfaces.IBatchService;
 import com.bootcamp.melifrescos.interfaces.IProductService;
 import com.bootcamp.melifrescos.model.Batch;
+import com.bootcamp.melifrescos.model.InboundOrder;
 import com.bootcamp.melifrescos.model.Product;
 import com.bootcamp.melifrescos.repository.IBatchRepo;
 import lombok.RequiredArgsConstructor;
@@ -49,19 +50,20 @@ public class BatchService implements IBatchService {
      * @return retorna os lotes criados
      */
     @Override
-    public List<Batch> createAll(List<BatchDTO> batchDTOS){
+    public List<Batch> createAll(List<BatchDTO> batchDTOS, InboundOrder savedInboundorder){
         List<Batch> batches = new ArrayList<>();
         batchDTOS.stream().forEach(b -> {
             Optional<Product> product = this.productService.getById(b.getProductId());
 
             if (b.getProductId()==null || product.isEmpty()) {
-                // TODO: trocar a exception  para uma personalizada
+                // TODO: trocar a exception para uma personalizada
                 throw new RuntimeException("Lista de lotes, possuí um produto inválido");
             }
 
             Batch batch = new Batch();
             BeanUtils.copyProperties(b, batch);
             batch.setProduct(product.get());
+            batch.setInboundOrder(savedInboundorder);
 
             batches.add(batch);
         });
