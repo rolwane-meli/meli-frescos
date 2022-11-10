@@ -1,6 +1,7 @@
 package com.bootcamp.melifrescos.service;
 
 import com.bootcamp.melifrescos.dto.ProductRequestDTO;
+import com.bootcamp.melifrescos.enums.Type;
 import com.bootcamp.melifrescos.interfaces.IProductService;
 import com.bootcamp.melifrescos.model.Product;
 import com.bootcamp.melifrescos.model.Seller;
@@ -8,6 +9,7 @@ import com.bootcamp.melifrescos.repository.IProductRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 @Service
@@ -30,7 +32,7 @@ public class ProductService implements IProductService {
             throw new RuntimeException("Vendedor nao existe");
         }
 
-        Product newProduct = new Product(null, product.getName(),product.getType(), seller,null);
+        Product newProduct = new Product(null, product.getName(), Type.fromValue(product.getType()), seller,null);
         return repo.save(newProduct);
     }
 
