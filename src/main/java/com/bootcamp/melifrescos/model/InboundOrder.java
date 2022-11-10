@@ -26,10 +26,6 @@ public class InboundOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 11, nullable = false)
-    @NotNull(message = "O número da ordem é obrigatório.")
-    private int orderNumber;
-
     @Column(nullable = false)
     @NotNull(message = "O dia da ordem é obrigatório.")
     @JsonDeserialize(using = LocalDateDeserializer.class)
