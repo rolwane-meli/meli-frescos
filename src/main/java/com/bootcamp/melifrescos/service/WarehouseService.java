@@ -6,6 +6,8 @@ import com.bootcamp.melifrescos.repository.IWarehouseRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class WarehouseService implements IWarehouseService {
@@ -16,4 +18,7 @@ public class WarehouseService implements IWarehouseService {
     public Warehouse create(Warehouse warehouse) {
         return repo.save(warehouse);
     }
+
+    @Override
+    public Optional<Warehouse> getById(Long id) { return repo.findById(id); }
 }
