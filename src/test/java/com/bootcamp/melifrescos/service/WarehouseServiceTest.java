@@ -3,7 +3,6 @@ package com.bootcamp.melifrescos.service;
 import com.bootcamp.melifrescos.dto.WarehouseRequestDTO;
 import com.bootcamp.melifrescos.exceptions.NotFoundException;
 import com.bootcamp.melifrescos.interfaces.IRepresentativeService;
-import com.bootcamp.melifrescos.interfaces.IWarehouseService;
 import com.bootcamp.melifrescos.model.Representative;
 import com.bootcamp.melifrescos.model.Warehouse;
 import com.bootcamp.melifrescos.repository.IWarehouseRepo;
