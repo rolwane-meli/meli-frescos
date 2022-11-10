@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
@@ -21,11 +23,13 @@ public class Warehouse {
     private Long id;
 
     @Column(length = 45, nullable = false)
+    @NotBlank(message = "O nome é obrigatório.")
     private String name;
 
     @OneToOne
     @JoinColumn(name = "idRepresentative")
     @JsonIgnoreProperties("warehouse")
+    @NotNull(message = "O representante é obrigatório.")
     private Representative representative;
 
     @OneToMany(mappedBy = "warehouse")

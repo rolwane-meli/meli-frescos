@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/v1/fresh-products/product")
 public class ProductController {
@@ -20,7 +22,7 @@ public class ProductController {
     private IProductService service;
 
     @PostMapping
-    public ResponseEntity<ProductResponseDTO> create(@RequestBody ProductRequestDTO product){
+    public ResponseEntity<ProductResponseDTO> create(@RequestBody @Valid ProductRequestDTO product){
         ProductResponseDTO newProduct = new ProductResponseDTO(service.create(product));
         return new ResponseEntity<>(newProduct, HttpStatus.CREATED);
     }

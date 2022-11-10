@@ -39,8 +39,8 @@ public class ProductServiceTest {
     void setup() {
         seller = new Seller(1L,"joao","31999999999","joao@email.com","12345678912345",null);
         product = new Product(1L,"leite", Type.REFRIGERATED,seller,null);
-        productRequestDTO = new ProductRequestDTO("leite",Type.REFRIGERATED,1L);
-        productRequestDTOFail = new ProductRequestDTO("leite",Type.REFRIGERATED,2L);
+        productRequestDTO = new ProductRequestDTO("leite",Type.REFRIGERATED.name(),1L);
+        productRequestDTOFail = new ProductRequestDTO("leite",Type.REFRIGERATED.name(),2L);
     }
 
     @Test
