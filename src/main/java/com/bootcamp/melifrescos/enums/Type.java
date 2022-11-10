@@ -1,10 +1,8 @@
 package com.bootcamp.melifrescos.enums;
 
-import com.bootcamp.melifrescos.exceptions.EnumNotFound;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.Arrays;
 @Getter
 @AllArgsConstructor
 public enum Type {
