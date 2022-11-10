@@ -38,4 +38,9 @@ public class WarehouseService implements IWarehouseService {
 
         return repo.save(warehouse);
     }
+
+    @Override
+    public Optional<Warehouse> getById(Long id) {
+        return repo.findById(id);
+    }
 }

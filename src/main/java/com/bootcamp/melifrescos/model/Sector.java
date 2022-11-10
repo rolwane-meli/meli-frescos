@@ -29,7 +29,7 @@ public class Sector {
     private String name;
 
     @Column(nullable = false)
-    @NotNull(message = "A capacidade é obrugatório.")
+    @NotNull(message = "A capacidade é obrigatória.")
     private double capacity;
 
     @Enumerated(EnumType.STRING)
