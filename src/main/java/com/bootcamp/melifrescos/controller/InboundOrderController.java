@@ -1,5 +1,6 @@
 package com.bootcamp.melifrescos.controller;
 
+import com.bootcamp.melifrescos.dto.InboundOrderDTO;
 import com.bootcamp.melifrescos.interfaces.IInboundOrderService;
 import com.bootcamp.melifrescos.model.InboundOrder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class InboundOrderController {
     private IInboundOrderService service;
 
     @PostMapping
-    public ResponseEntity<InboundOrder> create(@RequestBody @Valid InboundOrder inboundOrder) {
+    public ResponseEntity<InboundOrder> create(@RequestBody @Valid InboundOrderDTO inboundOrder) {
         return new ResponseEntity<>(service.create(inboundOrder), HttpStatus.CREATED);
     }
 }
