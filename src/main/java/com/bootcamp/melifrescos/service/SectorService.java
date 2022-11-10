@@ -6,6 +6,8 @@ import com.bootcamp.melifrescos.repository.ISectorRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class SectorService implements ISectorService {
@@ -15,5 +17,9 @@ public class SectorService implements ISectorService {
     @Override
     public Sector create(Sector sector) {
         return repo.save(sector);
+    }
+
+    public Optional<Sector> getById(Long id){
+        return repo.findById(id);
     }
 }
