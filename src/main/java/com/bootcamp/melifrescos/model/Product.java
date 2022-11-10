@@ -27,7 +27,6 @@ public class Product {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Type type;
-
     @ManyToOne
     @JoinColumn(name = "idSeller")
     @JsonIgnoreProperties("products")

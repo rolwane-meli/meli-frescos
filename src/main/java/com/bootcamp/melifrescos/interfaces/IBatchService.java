@@ -1,7 +1,16 @@
 package com.bootcamp.melifrescos.interfaces;
 
+import com.bootcamp.melifrescos.dto.BatchDTO;
+import com.bootcamp.melifrescos.exceptions.BatchNotExistException;
 import com.bootcamp.melifrescos.model.Batch;
 
+import java.util.List;
+import java.util.Optional;
+
 public interface IBatchService {
-    public Batch create(Batch batch);
+    Batch create(BatchDTO batch);
+
+    List<Batch> createAll(List<BatchDTO> batches);
+
+    Optional<Batch> getById(Long id) throws BatchNotExistException;
 }
