@@ -1,6 +1,7 @@
 package com.bootcamp.melifrescos.controller;
 
 import com.bootcamp.melifrescos.dto.ProductRequestDTO;
+import com.bootcamp.melifrescos.dto.ProductResponseDTO;
 import com.bootcamp.melifrescos.interfaces.IProductService;
 import com.bootcamp.melifrescos.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,8 @@ public class ProductController {
     private IProductService service;
 
     @PostMapping
-    public ResponseEntity<Product> create(@RequestBody ProductRequestDTO product){
-        return new ResponseEntity<>(service.create(product), HttpStatus.CREATED);
+    public ResponseEntity<ProductResponseDTO> create(@RequestBody ProductRequestDTO product){
+        ProductResponseDTO newProduct = new ProductResponseDTO(service.create(product));
+        return new ResponseEntity<>(newProduct, HttpStatus.CREATED);
     }
 }
