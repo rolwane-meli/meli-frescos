@@ -12,6 +12,11 @@ public class SellerService implements ISellerService {
 
     private final ISellerRepo repo;
 
+    /**
+     * Método responsável por criar o vendedor
+     * @param seller recebe-se pelo body
+     * @return retorna Seller criado
+     */
     @Override
     public Seller create(Seller seller) {
         return repo.save(seller);
