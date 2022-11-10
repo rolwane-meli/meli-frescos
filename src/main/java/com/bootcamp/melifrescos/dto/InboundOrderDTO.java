@@ -1,12 +1,14 @@
 package com.bootcamp.melifrescos.dto;
 
-import com.bootcamp.melifrescos.model.Batch;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class InboundOrderDTO {
     private Long sectionCode;
     private LocalDateTime orderDate;
