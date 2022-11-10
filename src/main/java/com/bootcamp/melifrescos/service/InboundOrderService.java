@@ -1,15 +1,22 @@
 package com.bootcamp.melifrescos.service;
 
+import com.bootcamp.melifrescos.dto.BatchDTO;
 import com.bootcamp.melifrescos.dto.InboundOrderDTO;
 import com.bootcamp.melifrescos.enums.Type;
+import com.bootcamp.melifrescos.exceptions.InvalidEnumTypeException;
+import com.bootcamp.melifrescos.exceptions.InvalidSectorTypeException;
+import com.bootcamp.melifrescos.exceptions.NotFoundException;
+import com.bootcamp.melifrescos.exceptions.UnavailableVolumeException;
 import com.bootcamp.melifrescos.interfaces.IInboundOrderService;
 import com.bootcamp.melifrescos.model.Batch;
 import com.bootcamp.melifrescos.model.InboundOrder;
 import com.bootcamp.melifrescos.model.Sector;
 import com.bootcamp.melifrescos.repository.IInboundOrderRepo;
+import com.sun.jdi.InvalidTypeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,59 +27,68 @@ public class InboundOrderService implements IInboundOrderService {
     private final IInboundOrderRepo repo;
     private final SectorService sectorService;
 
-    @Override
-    public InboundOrder create(InboundOrderDTO inboundOrder) {
-        Optional<Sector> sector = sectorService.getById(inboundOrder.getSectionCode());
+    private final BatchService batchService;
 
+    @Transactional
+    @Override
+    public InboundOrder create(InboundOrderDTO inboundOrderDTO) {
+        Optional<Sector> sector = sectorService.getById(inboundOrderDTO.getSectionCode());
+
+        this.validateInboundOrder(inboundOrderDTO,sector);
+
+        InboundOrder newInboundOrder = new InboundOrder(null,inboundOrderDTO.getOrderDate(),sector.get(),null);
+        InboundOrder inboundorder = repo.save(newInboundOrder);
+
+        batchService.createAll(inboundOrderDTO.getBatchStock(),inboundorder);
+
+        return inboundorder;
+    }
+
+    private void validateInboundOrder(InboundOrderDTO inboundOrder, Optional<Sector> sector){
         if (sector.isEmpty()){
-            throw new RuntimeException("setor nao existe");
+            throw new NotFoundException("setor nao existe");
         }
 
         if (!this.hasVolume(inboundOrder.getBatchStock(),sector.get())){
-            throw new RuntimeException("Nao tem capacidade para esse volume");
+            throw new UnavailableVolumeException("Nao tem capacidade para esse volume");
         }
 
         if (this.getTypeSector(inboundOrder.getBatchStock()) != sector.get().getType()) {
-            throw new RuntimeException("Setor de  armazemento errado");
+            throw new InvalidSectorTypeException("Setor de armazemento errado");
         }
-
-        InboundOrder inboundOrder1 = new InboundOrder(null,11,inboundOrder.getOrderDate(),sector.get(),inboundOrder.getBatchStock());
-        return repo.save(inboundOrder1);
     }
 
-    public Type getTypeSector(List<Batch> batches){
-        int contFrozen = 0;
-        int contRefrigerated = 0;
-        int contFresh = 0;
+    private Type getTypeSector(List<BatchDTO> batches){
 
-        for (Batch batch: batches) {
-            if (batch.getCurrentTemperature() < 0) {
-                contFrozen++;
-            } else if (batch.getCurrentTemperature() <=10) {
-                contRefrigerated++;
-            } else {
-                contFresh ++;
+        Type type = getTypeFromTemperature(batches.get(0).getCurrentTemperature());
+
+        for (BatchDTO batch: batches) {
+            if (getTypeFromTemperature(batch.getCurrentTemperature()) != type) {
+                return null;
             }
         }
 
-        if (contFrozen == batches.size()){
-            return Type.FROZEN;
-        }
-        if (contRefrigerated == batches.size()){
-            return Type.REFRIGERATED;
-        }
-        if (contFresh == batches.size()){
-            return Type.REFRIGERATED;
-        }
-
-        return null;
+        return type;
     }
 
-    public Boolean hasVolume(List<Batch> batches, Sector sector) {
+    private Type getTypeFromTemperature(double temperature){
+        if (temperature < 0) {
+            return Type.FROZEN;
+        }
+        if (temperature <=10) {
+            return Type.REFRIGERATED;
+        }
+        if (temperature <=20) {
+            return Type.FRESH;
+        }
+
+        throw new InvalidEnumTypeException("Tipo invalido");
+    }
+    private Boolean hasVolume(List<BatchDTO> batches, Sector sector) {
 
         double total = batches
                 .stream()
-                .mapToDouble(Batch::getVolume).sum();
+                .mapToDouble(BatchDTO::getVolume).sum();
 
         return sector.getCapacity() - total  >= 0;
     }
