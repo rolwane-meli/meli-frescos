@@ -10,5 +10,5 @@ import java.util.List;
 public class InboundOrderDTO {
     private Long sectionCode;
     private LocalDateTime orderDate;
-    private List<Batch> batchStock;
+    private List<BatchDTO> batchStock;
 }
