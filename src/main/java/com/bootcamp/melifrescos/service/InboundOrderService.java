@@ -8,11 +8,9 @@ import com.bootcamp.melifrescos.exceptions.InvalidSectorTypeException;
 import com.bootcamp.melifrescos.exceptions.NotFoundException;
 import com.bootcamp.melifrescos.exceptions.UnavailableVolumeException;
 import com.bootcamp.melifrescos.interfaces.IInboundOrderService;
-import com.bootcamp.melifrescos.model.Batch;
 import com.bootcamp.melifrescos.model.InboundOrder;
 import com.bootcamp.melifrescos.model.Sector;
 import com.bootcamp.melifrescos.repository.IInboundOrderRepo;
-import com.sun.jdi.InvalidTypeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +24,6 @@ public class InboundOrderService implements IInboundOrderService {
 
     private final IInboundOrderRepo repo;
     private final SectorService sectorService;
-
     private final BatchService batchService;
 
     @Transactional
@@ -34,7 +31,7 @@ public class InboundOrderService implements IInboundOrderService {
     public InboundOrder create(InboundOrderDTO inboundOrderDTO) {
         Optional<Sector> sector = sectorService.getById(inboundOrderDTO.getSectionCode());
 
-        this.validateInboundOrder(inboundOrderDTO,sector);
+        this.validateInboundOrder(inboundOrderDTO, sector);
 
         InboundOrder newInboundOrder = new InboundOrder(null,inboundOrderDTO.getOrderDate(),sector.get(),null);
         InboundOrder inboundorder = repo.save(newInboundOrder);
@@ -42,6 +39,29 @@ public class InboundOrderService implements IInboundOrderService {
         batchService.createAll(inboundOrderDTO.getBatchStock(),inboundorder);
 
         return inboundorder;
+    }
+
+    public InboundOrder update(Long id, InboundOrderDTO inboundOrderDTO) {
+        Optional<InboundOrder> inboundOrder = this.getById(id);
+
+        if (inboundOrder.isEmpty()) {
+            throw new NotFoundException("inboundOrder não existe");
+        }
+
+        Optional<Sector> sector = sectorService.getById(inboundOrderDTO.getSectionCode());
+
+        this.validateInboundOrder(inboundOrderDTO, sector);
+
+        InboundOrder newInboundOrder = new InboundOrder(id, inboundOrderDTO.getOrderDate(), sector.get(),null);
+        InboundOrder savedInboundOrder = repo.save(newInboundOrder);
+
+        batchService.createAll(inboundOrderDTO.getBatchStock(), savedInboundOrder);
+
+        return savedInboundOrder;
+    }
+
+    public Optional<InboundOrder> getById(Long id) {
+        return repo.findById(id);
     }
 
     private void validateInboundOrder(InboundOrderDTO inboundOrder, Optional<Sector> sector){
