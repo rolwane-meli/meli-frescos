@@ -4,4 +4,5 @@ import com.bootcamp.melifrescos.model.Sector;
 
 public interface ISectorService {
     public Sector create(Sector sector);
+    public boolean isWarehouseExists(Long id);
 }
