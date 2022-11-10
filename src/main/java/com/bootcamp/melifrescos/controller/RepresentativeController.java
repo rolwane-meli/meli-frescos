@@ -19,6 +19,11 @@ public class RepresentativeController {
     @Autowired
     private IRepresentativeService service;
 
+    /**
+     * Método responsável por criar Representative
+     * @param representative recebe-se pelo body
+     * @return Response entity de representantive
+     */
     @PostMapping
     public ResponseEntity<Representative> create(@RequestBody @Valid Representative representative) {
         return new ResponseEntity<>(service.create(representative), HttpStatus.OK);
