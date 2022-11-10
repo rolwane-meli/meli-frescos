@@ -1,13 +1,13 @@
 package com.bootcamp.melifrescos.interfaces;
 
+import com.bootcamp.melifrescos.dto.SectorRequestDTO;
 import com.bootcamp.melifrescos.model.Sector;
 
 import java.util.Optional;
 
 public interface ISectorService {
-    public Sector create(Sector sector);
 
-    public Optional<Sector> getById(Long id);
+    Sector create(SectorRequestDTO sector);
 
-    public boolean isWarehouseExists(Long id);
+     Optional<Sector> getById(Long id);
 }
