@@ -18,6 +18,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,17 +29,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class BatchServiceTest {
     @InjectMocks
     private BatchService service;
-
     @Mock
     private IProductService productService;
-
     @Mock
     private IBatchRepo repo;
 
     private Batch batch;
-
     private BatchDTO batchDTO;
-
+    private List<Batch> batchList = new ArrayList<>();
     private Product product;
 
     @BeforeEach
@@ -45,6 +44,7 @@ public class BatchServiceTest {
         product = new Product(1L, "Leite", Type.REFRIGERATED, new Seller(), null);
         batchDTO = new BatchDTO(null, 1L, -13.00, 5, LocalDate.now(), LocalTime.now(), 30.00, LocalDateTime.now(), new BigDecimal(7));
         batch = new Batch(1L, -13.00, 5, LocalDate.now(), LocalTime.now(), 30.00, LocalDateTime.now(), new BigDecimal(7), product, null);
+        batchList.add(batch);
     }
 
     @Test
@@ -64,6 +64,34 @@ public class BatchServiceTest {
 
     @Test
     void create_returnException_whenFailureCase() {
+        Mockito.when(productService.getById(ArgumentMatchers.anyLong()))
+                .thenReturn(null);
+
+        assertThrows(RuntimeException.class,() ->  {
+            service.create(batchDTO);
+        });
+    }
+
+    @Test
+    void createAll_returnBatch_whenCaseOfSuccess(){
+        Mockito.when(productService.getById(ArgumentMatchers.anyLong()))
+                .thenReturn(Optional.of(product));
+
+        BDDMockito.when(repo.saveAll(ArgumentMatchers.anyList()))
+                .thenReturn(batchList);
+
+        List<BatchDTO> batchDTOList = new ArrayList<>();
+        batchDTOList.add(batchDTO);
+
+        List<Batch> resultBatch = service.createAll(batchDTOList);
+
+        assertThat(resultBatch).isNotNull();
+        assertThat(resultBatch.get(0)).isEqualTo(batchList.get(0));
+        assertThat(resultBatch).isEqualTo(batchList);
+    }
+
+    @Test
+    void createAll_returnException_whenFailureCase() {
         Mockito.when(productService.getById(ArgumentMatchers.anyLong()))
                 .thenReturn(null);
 
