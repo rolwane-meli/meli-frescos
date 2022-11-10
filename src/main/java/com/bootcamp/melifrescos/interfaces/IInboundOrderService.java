@@ -4,5 +4,6 @@ import com.bootcamp.melifrescos.dto.InboundOrderDTO;
 import com.bootcamp.melifrescos.model.InboundOrder;
 
 public interface IInboundOrderService {
-    public InboundOrder create(InboundOrderDTO inboundOrder);
+    InboundOrder create(InboundOrderDTO inboundOrder);
+    InboundOrder update(Long id, InboundOrderDTO inboundOrder);
 }
