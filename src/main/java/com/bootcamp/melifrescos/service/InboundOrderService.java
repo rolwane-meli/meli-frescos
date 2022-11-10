@@ -41,6 +41,12 @@ public class InboundOrderService implements IInboundOrderService {
         return inboundorder;
     }
 
+    /**
+     * Método responsável por atualizar uma inboundOrder
+     * @param id inboundOrder a ser atualizada
+     * @param inboundOrderDTO
+     * @return InboundOrder atualizada
+     */
     public InboundOrder update(Long id, InboundOrderDTO inboundOrderDTO) {
         Optional<InboundOrder> inboundOrder = this.getById(id);
 
