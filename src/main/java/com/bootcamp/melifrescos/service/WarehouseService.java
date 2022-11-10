@@ -21,6 +21,11 @@ public class WarehouseService implements IWarehouseService {
 
     private final IRepresentativeService representativeService;
 
+    /**
+     * Método que insere um novo armazém no banco de dados.
+     * @param warehouseRequestDTO
+     * @return Warehouse
+     */
     @Override
     public Warehouse create(WarehouseRequestDTO warehouseRequestDTO) {
         Optional<Representative> representative = representativeService.getById(warehouseRequestDTO.getRepresentativeId());
