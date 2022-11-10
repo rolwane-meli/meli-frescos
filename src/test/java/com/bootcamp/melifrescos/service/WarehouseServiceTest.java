@@ -3,7 +3,6 @@ package com.bootcamp.melifrescos.service;
 import com.bootcamp.melifrescos.dto.WarehouseRequestDTO;
 import com.bootcamp.melifrescos.exceptions.NotFoundException;
 import com.bootcamp.melifrescos.interfaces.IRepresentativeService;
-import com.bootcamp.melifrescos.interfaces.IWarehouseService;
 import com.bootcamp.melifrescos.model.Representative;
 import com.bootcamp.melifrescos.model.Warehouse;
 import com.bootcamp.melifrescos.repository.IWarehouseRepo;
@@ -15,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -65,4 +65,17 @@ public class WarehouseServiceTest {
             warehouseService.create(warehouseRequestDTO);
         });
     }
+
+    @Test
+    public void getById_givenAnValidId_returnsWarehouse(){
+        Mockito.when(warehouseRepo.findById(ArgumentMatchers.anyLong()))
+                .thenReturn(Optional.of(warehouse));
+
+        Warehouse resultWarehouse = warehouseService.getById(1L).orElse(null);
+
+        assertThat(resultWarehouse).isNotNull();
+        assertThat(resultWarehouse).isEqualTo(warehouse);
+        assertThat(resultWarehouse.getId()).isPositive();
+    }
+
 }
