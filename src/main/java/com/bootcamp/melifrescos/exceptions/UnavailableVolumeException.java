@@ -1,7 +1,6 @@
 package com.bootcamp.melifrescos.exceptions;
 
-public class UnavailableVolumeException extends RuntimeException{
-    private String message;
+public class UnavailableVolumeException extends RuntimeException {
 
     public UnavailableVolumeException(String message) {
         super(message);

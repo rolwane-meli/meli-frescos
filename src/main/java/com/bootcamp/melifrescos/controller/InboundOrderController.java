@@ -6,10 +6,7 @@ import com.bootcamp.melifrescos.model.InboundOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -23,5 +20,10 @@ public class InboundOrderController {
     @PostMapping
     public ResponseEntity<InboundOrder> create(@RequestBody @Valid InboundOrderDTO inboundOrder) {
         return new ResponseEntity<>(service.create(inboundOrder), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<InboundOrder> update(@PathVariable Long id, @RequestBody @Valid InboundOrderDTO inboundOrder) {
+        return new ResponseEntity<>(service.update(id, inboundOrder), HttpStatus.OK);
     }
 }

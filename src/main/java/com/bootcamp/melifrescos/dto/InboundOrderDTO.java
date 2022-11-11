@@ -1,6 +1,5 @@
 package com.bootcamp.melifrescos.dto;
 
-import com.bootcamp.melifrescos.model.Batch;
 import lombok.*;
 
 import java.time.LocalDateTime;

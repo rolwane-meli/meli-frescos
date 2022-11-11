@@ -4,6 +4,7 @@ import com.bootcamp.melifrescos.dto.SectorRequestDTO;
 import com.bootcamp.melifrescos.enums.Type;
 import com.bootcamp.melifrescos.exceptions.NotFoundException;
 import com.bootcamp.melifrescos.interfaces.ISectorService;
+import com.bootcamp.melifrescos.interfaces.IWarehouseService;
 import com.bootcamp.melifrescos.model.Sector;
 import com.bootcamp.melifrescos.model.Warehouse;
 import com.bootcamp.melifrescos.repository.ISectorRepo;
@@ -17,11 +18,10 @@ import java.util.Optional;
 public class SectorService implements ISectorService {
 
     private final ISectorRepo repo;
-    private final WarehouseService wareService;
+    private final IWarehouseService wareService;
 
     /**
      * It creates a new sector, given a sector request DTO, and saves it to the database
-     *
      * @param sector The object that will be created.
      * @return A Sector object
      */
@@ -37,20 +37,13 @@ public class SectorService implements ISectorService {
         return repo.save(newSector);
     }
 
-
-
     /**
      * If the sector with the given id exists, return it, otherwise return null.
-     *
      * @param id The id of the sector you want to get.
      * @return Optional<Sector>
      */
     @Override
     public Optional<Sector> getById(Long id) {
        return repo.findById(id);
-    }
-
-    public Optional<Sector> getById(Long id){
-        return repo.findById(id);
     }
 }
