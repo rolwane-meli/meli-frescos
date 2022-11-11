@@ -1,6 +1,7 @@
 package com.bootcamp.melifrescos.service;
 
 import com.bootcamp.melifrescos.dto.ProductRequestDTO;
+import com.bootcamp.melifrescos.dto.ProductResponseDTO;
 import com.bootcamp.melifrescos.enums.Type;
 import com.bootcamp.melifrescos.interfaces.IProductService;
 import com.bootcamp.melifrescos.model.Product;
@@ -9,7 +10,7 @@ import com.bootcamp.melifrescos.repository.IProductRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -36,8 +37,32 @@ public class ProductService implements IProductService {
         return repo.save(newProduct);
     }
 
+    /**
+     * Método responsável por buscar um Produto pelo Id
+     * @param id id do produto
+     * @return retorna um Produto
+     */
     @Override
     public Optional<Product> getById(Long id) {
         return repo.findById(id);
+    }
+
+    /**
+     * Método responsável por buscar todos os produtos que estão alocados em algum lote/armazém
+     * @return returna uma lista de produtos, com seu preço e Id do lote
+     */
+    @Override
+    public List<ProductResponseDTO> findProductsByBatches(){
+        return repo.findProductsByBatches();
+    }
+
+    /**
+     * Método responsável por buscar os produtos ques estão alocados em algum lote/armazém e filtrar pelo seu tipo
+     * @param type Tipo dos produtos que deseja buscar
+     * @return Lista de produtos filtrada, com seu preço e Id do lote
+     */
+    @Override
+    public List<ProductResponseDTO> findProductsByBatchesAndType(Type type){
+        return repo.findProductsByBatchesAndType(type);
     }
 }
