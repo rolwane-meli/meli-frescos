@@ -1,15 +1,13 @@
 package com.bootcamp.melifrescos.controller;
 
+import com.bootcamp.melifrescos.dto.ProductStockInWarehouseDTO;
 import com.bootcamp.melifrescos.dto.WarehouseRequestDTO;
 import com.bootcamp.melifrescos.dto.WarehouseResponseDTO;
 import com.bootcamp.melifrescos.interfaces.IWarehouseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/fresh-products/warehouse")
@@ -22,5 +20,10 @@ public class WarehouseController {
     public ResponseEntity<WarehouseResponseDTO> create(@RequestBody WarehouseRequestDTO warehouseRequestDTO) {
         WarehouseResponseDTO warehouseResponseDTO = new WarehouseResponseDTO(service.create(warehouseRequestDTO));
         return new ResponseEntity<>(warehouseResponseDTO, HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<ProductStockInWarehouseDTO> checkProductStock(@RequestParam Long productId){
+        return  new ResponseEntity<>(service.checkProductStock(productId), HttpStatus.OK);
     }
 }
