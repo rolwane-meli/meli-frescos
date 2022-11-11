@@ -9,7 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ProductStockInWarehouseDTO {
+public class ProductStockDTO {
     private Long productId;
     private List<WarehouseStockDTO> warehouses;
 }

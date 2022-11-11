@@ -19,5 +19,5 @@ public interface IWarehouseRepo extends JpaRepository<Warehouse, Long> {
             "where p.id=:productId " +
             "group by w.id"
     )
-    List<WarehouseStockDTO> findTotalQuantityOfProductInWarehouse(@Param("productId")Long productId);
+    List<WarehouseStockDTO> findProductStockInWarehouse(@Param("productId")Long productId);
 }

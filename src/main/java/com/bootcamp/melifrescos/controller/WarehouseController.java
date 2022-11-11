@@ -1,6 +1,6 @@
 package com.bootcamp.melifrescos.controller;
 
-import com.bootcamp.melifrescos.dto.ProductStockInWarehouseDTO;
+import com.bootcamp.melifrescos.dto.ProductStockDTO;
 import com.bootcamp.melifrescos.dto.WarehouseRequestDTO;
 import com.bootcamp.melifrescos.dto.WarehouseResponseDTO;
 import com.bootcamp.melifrescos.interfaces.IWarehouseService;
@@ -23,7 +23,7 @@ public class WarehouseController {
     }
 
     @GetMapping
-    public ResponseEntity<ProductStockInWarehouseDTO> checkProductStock(@RequestParam Long productId){
+    public ResponseEntity<ProductStockDTO> checkProductStock(@RequestParam Long productId){
         return  new ResponseEntity<>(service.checkProductStock(productId), HttpStatus.OK);
     }
 }

@@ -1,6 +1,8 @@
 package com.bootcamp.melifrescos.service;
 
+import com.bootcamp.melifrescos.dto.ProductStockDTO;
 import com.bootcamp.melifrescos.dto.WarehouseRequestDTO;
+import com.bootcamp.melifrescos.dto.WarehouseStockDTO;
 import com.bootcamp.melifrescos.exceptions.NotFoundException;
 import com.bootcamp.melifrescos.interfaces.IRepresentativeService;
 import com.bootcamp.melifrescos.model.Representative;
@@ -15,6 +17,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,12 +39,18 @@ public class WarehouseServiceTest {
     private WarehouseRequestDTO warehouseRequestDTO;
     private Warehouse warehouse;
     private Representative representative;
+    private ProductStockDTO productStock;
+    private WarehouseStockDTO warehouseStock;
+    private List<WarehouseStockDTO> warehouses = new ArrayList<>();
 
     @BeforeEach
     public void setup() {
         representative = new Representative(1L, "Ana Oliveira Reis", "ana.reis@hotmail.com", "90142253790", null);
         warehouseRequestDTO = new WarehouseRequestDTO("meli-ce1", 1L);
         warehouse = new Warehouse(1L, warehouseRequestDTO.getName(), representative, null);
+        warehouseStock = new WarehouseStockDTO(1L, "250");
+        warehouses.add(warehouseStock);
+        productStock = new ProductStockDTO(1L, warehouses);
     }
 
     @Test
@@ -78,4 +88,25 @@ public class WarehouseServiceTest {
         assertThat(resultWarehouse.getId()).isPositive();
     }
 
+    @Test
+    public void checkProductStock_returnProductStockInWarehouse_whenProductExistInAnyWarehouse(){
+        Mockito.when(warehouseRepo.findProductStockInWarehouse(ArgumentMatchers.anyLong()))
+                .thenReturn(warehouses);
+
+        ProductStockDTO result = warehouseService.checkProductStock(1L);
+
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(productStock);
+        assertThat(result.getWarehouses()).isEqualTo(warehouses);
+    }
+
+    @Test
+    public void checkProductStock_returnNotFoundException_whenProductNotExistInAnyWarehouse(){
+        Mockito.when(warehouseRepo.findProductStockInWarehouse(ArgumentMatchers.anyLong()))
+                        .thenReturn(null);
+
+        assertThrows(NotFoundException.class,() ->  {
+            warehouseService.checkProductStock(2L);
+        });
+    }
 }

@@ -1,6 +1,6 @@
 package com.bootcamp.melifrescos.service;
 
-import com.bootcamp.melifrescos.dto.ProductStockInWarehouseDTO;
+import com.bootcamp.melifrescos.dto.ProductStockDTO;
 import com.bootcamp.melifrescos.dto.WarehouseRequestDTO;
 import com.bootcamp.melifrescos.dto.WarehouseStockDTO;
 import com.bootcamp.melifrescos.exceptions.NotFoundException;
@@ -52,13 +52,13 @@ public class WarehouseService implements IWarehouseService {
      * @return Retorna uma DTO com o Id do produto e os armazéns em que o mesmo está armazenado com suas respectivas quantidades
      */
     @Override
-    public ProductStockInWarehouseDTO checkProductStock(Long productId){
-        List<WarehouseStockDTO> warehouseStockList = repo.findTotalQuantityOfProductInWarehouse(productId);
+    public ProductStockDTO checkProductStock(Long productId){
+        List<WarehouseStockDTO> warehouseStockList = repo.findProductStockInWarehouse(productId);
 
         if (warehouseStockList==null || warehouseStockList.isEmpty()){
             throw new NotFoundException("Produto não está alocado em nenhum armazém");
         }
 
-        return new ProductStockInWarehouseDTO(productId, warehouseStockList);
+        return new ProductStockDTO(productId, warehouseStockList);
     }
 }
