@@ -1,5 +1,8 @@
 package com.bootcamp.melifrescos.service;
 
+import com.bootcamp.melifrescos.enums.OrderStatus;
+import com.bootcamp.melifrescos.exceptions.NotFoundException;
+import com.bootcamp.melifrescos.exceptions.PurchaseAlreadyFinishedException;
 import com.bootcamp.melifrescos.interfaces.IPurchaseOrderService;
 import com.bootcamp.melifrescos.model.PurchaseOrder;
 import com.bootcamp.melifrescos.repository.IPurchaseOrderRepo;
@@ -16,10 +19,20 @@ public class PurchaseOrderService implements IPurchaseOrderService {
 
     @Override
     public void updateStatusToFinished(Long id) {
+        Optional<PurchaseOrder> optionalPurchaseOrder = repo.findById(id);
 
-    }
+        if (optionalPurchaseOrder.isEmpty()) {
+            throw new NotFoundException("O carrinho informado não existe");
+        }
 
-    public Optional<PurchaseOrder> getById(Long id) {
-        return repo.findById(id);
+        PurchaseOrder purchaseOrder = optionalPurchaseOrder.get();
+
+        if (purchaseOrder.getStatus() == OrderStatus.FINISHED) {
+            throw new PurchaseAlreadyFinishedException("O carrinho já está finalizado");
+        }
+
+        purchaseOrder.setStatus(OrderStatus.FINISHED);
+
+        repo.save(purchaseOrder);
     }
 }
