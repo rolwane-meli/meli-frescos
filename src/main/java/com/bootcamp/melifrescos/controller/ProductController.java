@@ -38,7 +38,7 @@ public class ProductController {
 
     @GetMapping("/type/{type}")
     public ResponseEntity<List<ProductListDTO>> getAllByType(@PathVariable String type){
-        List<ProductListDTO> response = service.findProductsByBatchesAndType(Type.fromValue(type.toUpperCase()));
+        List<ProductListDTO> response = service.findProductsByBatchesAndType(Type.fromSigla(type));
         if(response.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
