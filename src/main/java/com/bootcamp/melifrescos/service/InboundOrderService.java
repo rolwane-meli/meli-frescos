@@ -27,7 +27,7 @@ public class InboundOrderService implements IInboundOrderService {
     private final BatchService batchService;
 
     /**
-     * Método responsável por criar uma ordem de compra
+     * Método responsável por criar um pedido de entrada
      * @param inboundOrderDTO ordem de compra
      * @return onderm de compra criada
      */
@@ -47,7 +47,7 @@ public class InboundOrderService implements IInboundOrderService {
     }
 
     /**
-     * Método responsável por atualizar uma inboundOrder
+     * Método responsável por atualizar um pedido de entrada
      * @param id inboundOrder a ser atualizada
      * @param inboundOrderDTO
      * @return InboundOrder atualizada
@@ -71,6 +71,11 @@ public class InboundOrderService implements IInboundOrderService {
         return savedInboundOrder;
     }
 
+    /**
+     * Método responsável por buscar um pedido de entrada por id
+     * @param id pedido de entrada
+     * @return Optional de InbouderOrder
+     */
     public Optional<InboundOrder> getById(Long id) {
         return repo.findById(id);
     }

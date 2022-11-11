@@ -5,6 +5,7 @@ import com.bootcamp.melifrescos.dto.InboundOrderDTO;
 import com.bootcamp.melifrescos.enums.Type;
 import com.bootcamp.melifrescos.exceptions.InvalidSectorTypeException;
 import com.bootcamp.melifrescos.exceptions.NotFoundException;
+import com.bootcamp.melifrescos.exceptions.UnavailableVolumeException;
 import com.bootcamp.melifrescos.model.InboundOrder;
 import com.bootcamp.melifrescos.model.Sector;
 import com.bootcamp.melifrescos.model.Warehouse;
@@ -37,16 +38,17 @@ public class InboundOrderServiceTest {
 
     @Mock
     private IInboundOrderRepo inboundOrderRepo;
+
     @Mock
     private SectorService sectorService;
 
     @Mock
     private BatchService batchService;
-    private InboundOrderDTO inboundOrderDTO, invalidInboundOrderDTO;
-    private InboundOrder newInboundOrder;
-    private Sector sector;
-    private List<BatchDTO> batchList = new ArrayList<>();
 
+    private InboundOrderDTO inboundOrderDTO, invalidInboundOrderDTO;
+    private InboundOrder inboundOrder;
+    private Sector sector, sectorFail;
+    private List<BatchDTO> batchList = new ArrayList<>();
     private List<BatchDTO> invalidBacthList = new ArrayList<>();
     private BatchDTO batch01;
     private BatchDTO batch02;
@@ -58,17 +60,21 @@ public class InboundOrderServiceTest {
         batch02 = new BatchDTO(null, 2L, -18.00, 25, LocalDate.now(), LocalTime.now(), 45, LocalDateTime.now(), new BigDecimal(9));
         batch03 = new BatchDTO(null, 3L, 10.00, 155, LocalDate.now(), LocalTime.now(), 20, LocalDateTime.now(), new BigDecimal(10));
 
+        // Lista de Batches do mesmo tipo
         batchList.add(batch01);
         batchList.add(batch02);
 
+        // Lista de Batches de tipos diferentes
         invalidBacthList.add(batch01);
         invalidBacthList.add(batch03);
 
         inboundOrderDTO = new InboundOrderDTO(1L, LocalDateTime.now(), batchList);
         invalidInboundOrderDTO = new InboundOrderDTO(1L, LocalDateTime.now(), invalidBacthList);
-        newInboundOrder = new InboundOrder(1L, inboundOrderDTO.getOrderDate(), new Sector(),null);
 
         sector = new Sector(1L, "meli-ce1", 100, Type.FROZEN, new Warehouse(), null);
+        inboundOrder = new InboundOrder(1L, inboundOrderDTO.getOrderDate(), sector,null);
+
+        sectorFail = new Sector(1L, "meli-ce1", 10, Type.FROZEN, new Warehouse(), null);
     }
 
     @Test
@@ -80,15 +86,15 @@ public class InboundOrderServiceTest {
                 .thenReturn(Optional.of(sector));
 
         Mockito.when(inboundOrderRepo.save(ArgumentMatchers.any()))
-                .thenReturn(newInboundOrder);
+                .thenReturn(inboundOrder);
 
         Mockito.when(batchService.createAll(ArgumentMatchers.anyList(), ArgumentMatchers.any()))
                 .thenReturn(ArgumentMatchers.anyList());
 
         InboundOrder result = inboundOrderService.update(1L, inboundOrderDTO);
 
-        assertThat(result).isEqualTo(newInboundOrder);
-        assertThat(result.getId()).isEqualTo(newInboundOrder.getId());
+        assertThat(result).isEqualTo(inboundOrder);
+        assertThat(result.getId()).isEqualTo(inboundOrder.getId());
     }
 
     @Test
@@ -111,6 +117,43 @@ public class InboundOrderServiceTest {
 
         assertThrows(InvalidSectorTypeException.class, () ->  {
             inboundOrderService.update(1L, invalidInboundOrderDTO);
+        });
+    }
+
+    @Test
+    void create_returnNewInboundOrder_whenCaseOfSucces(){
+        Mockito.when(sectorService.getById(ArgumentMatchers.any()))
+                .thenReturn(Optional.of(sector));
+
+        Mockito.when(inboundOrderRepo.save(ArgumentMatchers.any()))
+                .thenReturn(inboundOrder);
+
+        Mockito.when(batchService.createAll(ArgumentMatchers.anyList(),ArgumentMatchers.any()))
+                .thenReturn(ArgumentMatchers.anyList());
+
+        InboundOrder newInboundOrder = inboundOrderService.create(inboundOrderDTO);
+
+        assertThat(newInboundOrder).isEqualTo(inboundOrder);
+        assertThat(newInboundOrder.getId()).isEqualTo(inboundOrder.getId());
+    }
+
+    @Test
+    void create_throwNotFoundException_whenSectorDoesNotExist(){
+        Mockito.when(sectorService.getById(ArgumentMatchers.any()))
+                .thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class,() ->  {
+            inboundOrderService.create(inboundOrderDTO);
+        });
+    }
+
+    @Test
+    void create_throwUnavailableVolumeException_whenVolumeDontHaveTheCapacity(){
+        Mockito.when(sectorService.getById(ArgumentMatchers.any()))
+                .thenReturn(Optional.of(sectorFail));
+
+        assertThrows(UnavailableVolumeException.class,() ->  {
+            inboundOrderService.create(inboundOrderDTO);
         });
     }
 }
