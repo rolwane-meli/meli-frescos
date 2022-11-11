@@ -1,7 +1,9 @@
 package com.bootcamp.melifrescos.controller;
 
+import com.bootcamp.melifrescos.dto.ProductListDTO;
 import com.bootcamp.melifrescos.dto.ProductRequestDTO;
 import com.bootcamp.melifrescos.dto.ProductResponseDTO;
+import com.bootcamp.melifrescos.enums.Type;
 import com.bootcamp.melifrescos.interfaces.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,8 +27,8 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponseDTO>> getAll(){
-        List<ProductResponseDTO> response = service.findProductsByBatches();
+    public ResponseEntity<List<ProductListDTO>> getAll(){
+        List<ProductListDTO> response = service.findProductsByBatches();
         if(response.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -35,8 +37,8 @@ public class ProductController {
     }
 
     @GetMapping("/type/{type}")
-    public ResponseEntity<List<ProductResponseDTO>> getAllByType(@PathVariable String type){
-        List<ProductResponseDTO> response = service.findProductsByBatchesAndType(Type.fromValue(type.toUpperCase()));
+    public ResponseEntity<List<ProductListDTO>> getAllByType(@PathVariable String type){
+        List<ProductListDTO> response = service.findProductsByBatchesAndType(Type.fromValue(type.toUpperCase()));
         if(response.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

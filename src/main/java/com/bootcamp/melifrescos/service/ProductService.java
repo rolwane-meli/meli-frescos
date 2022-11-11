@@ -1,5 +1,6 @@
 package com.bootcamp.melifrescos.service;
 
+import com.bootcamp.melifrescos.dto.ProductListDTO;
 import com.bootcamp.melifrescos.dto.ProductRequestDTO;
 import com.bootcamp.melifrescos.dto.ProductResponseDTO;
 import com.bootcamp.melifrescos.enums.Type;
@@ -52,7 +53,7 @@ public class ProductService implements IProductService {
      * @return returna uma lista de produtos, com seu preço e Id do lote
      */
     @Override
-    public List<ProductResponseDTO> findProductsByBatches(){
+    public List<ProductListDTO> findProductsByBatches(){
         return repo.findProductsByBatches();
     }
 
@@ -62,7 +63,7 @@ public class ProductService implements IProductService {
      * @return Lista de produtos filtrada, com seu preço e Id do lote
      */
     @Override
-    public List<ProductResponseDTO> findProductsByBatchesAndType(Type type){
+    public List<ProductListDTO> findProductsByBatchesAndType(Type type){
         return repo.findProductsByBatchesAndType(type);
     }
 }
