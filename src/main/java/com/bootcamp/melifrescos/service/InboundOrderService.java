@@ -26,6 +26,11 @@ public class InboundOrderService implements IInboundOrderService {
     private final SectorService sectorService;
     private final BatchService batchService;
 
+    /**
+     * Método responsável por criar uma ordem de compra
+     * @param inboundOrderDTO ordem de compra
+     * @return onderm de compra criada
+     */
     @Transactional
     @Override
     public InboundOrder create(InboundOrderDTO inboundOrderDTO) {
@@ -70,6 +75,11 @@ public class InboundOrderService implements IInboundOrderService {
         return repo.findById(id);
     }
 
+    /**
+     * Método responsável por validar a ordem de compra
+     * @param inboundOrder ordem de compra
+     * @param sector setor
+     */
     private void validateInboundOrder(InboundOrderDTO inboundOrder, Optional<Sector> sector){
         if (sector.isEmpty()){
             throw new NotFoundException("setor nao existe");
@@ -84,6 +94,11 @@ public class InboundOrderService implements IInboundOrderService {
         }
     }
 
+    /**
+     * Método responsável por validar se o tipo dos  lotes  sao iguais
+     * @param batches Lista de lotes
+     * @return tipo
+     */
     private Type getTypeSector(List<BatchDTO> batches){
 
         Type type = getTypeFromTemperature(batches.get(0).getCurrentTemperature());
@@ -97,6 +112,11 @@ public class InboundOrderService implements IInboundOrderService {
         return type;
     }
 
+    /**
+     * Método responsável por pegar o tipo através da temperatura
+     * @param temperature
+     * @return tipo congelado ou resfriado ou fresco
+     */
     private Type getTypeFromTemperature(double temperature){
         if (temperature < 0) {
             return Type.FROZEN;
@@ -110,6 +130,13 @@ public class InboundOrderService implements IInboundOrderService {
 
         throw new InvalidEnumTypeException("Tipo invalido");
     }
+
+    /**
+     * Método responsável por validar se tem volume disponível no setor
+     * @param batches Lista de lotes
+     * @param sector setor
+     * @return boolean
+     */
     private Boolean hasVolume(List<BatchDTO> batches, Sector sector) {
 
         double total = batches
