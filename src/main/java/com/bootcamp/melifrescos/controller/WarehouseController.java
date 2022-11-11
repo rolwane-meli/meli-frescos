@@ -2,10 +2,7 @@ package com.bootcamp.melifrescos.controller;
 
 import com.bootcamp.melifrescos.dto.WarehouseRequestDTO;
 import com.bootcamp.melifrescos.dto.WarehouseResponseDTO;
-import com.bootcamp.melifrescos.interfaces.IRepresentativeService;
 import com.bootcamp.melifrescos.interfaces.IWarehouseService;
-import com.bootcamp.melifrescos.model.Representative;
-import com.bootcamp.melifrescos.model.Warehouse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

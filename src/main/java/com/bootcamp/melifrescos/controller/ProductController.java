@@ -3,7 +3,6 @@ package com.bootcamp.melifrescos.controller;
 import com.bootcamp.melifrescos.dto.ProductRequestDTO;
 import com.bootcamp.melifrescos.dto.ProductResponseDTO;
 import com.bootcamp.melifrescos.interfaces.IProductService;
-import com.bootcamp.melifrescos.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

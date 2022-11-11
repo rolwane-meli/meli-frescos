@@ -1,7 +1,6 @@
 package com.bootcamp.melifrescos.service;
 
 import com.bootcamp.melifrescos.dto.WarehouseRequestDTO;
-import com.bootcamp.melifrescos.dto.WarehouseResponseDTO;
 import com.bootcamp.melifrescos.exceptions.NotFoundException;
 import com.bootcamp.melifrescos.interfaces.IRepresentativeService;
 import com.bootcamp.melifrescos.interfaces.IWarehouseService;

@@ -2,15 +2,12 @@ package com.bootcamp.melifrescos.handler;
 
 import com.bootcamp.melifrescos.exceptions.*;
 import com.bootcamp.melifrescos.model.FiledError;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import javax.validation.UnexpectedTypeException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
