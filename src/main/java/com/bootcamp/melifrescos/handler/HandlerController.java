@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class HandlerController {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ExceptionDetails> handleValidPost(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ExceptionDetails> handlerMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
 
         List<FiledError> errors = ex.getFieldErrors().stream()
                 .map((erro) -> new FiledError(erro.getDefaultMessage()))
@@ -32,7 +32,7 @@ public class HandlerController {
         return new ResponseEntity<>(exceptionDetails, HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ExceptionDetails> handleExceptions(NotFoundException ex) {
+    public ResponseEntity<ExceptionDetails> handlerNotFoundException(NotFoundException ex) {
         ExceptionDetails exceptionDetails = ExceptionDetails.builder()
                 .title("BAD REQUEST")
                 .message(ex.getMessage())
@@ -43,7 +43,7 @@ public class HandlerController {
     }
 
     @ExceptionHandler(UnavailableVolumeException.class)
-    public ResponseEntity<ExceptionDetails> handleExceptions(UnavailableVolumeException ex) {
+    public ResponseEntity<ExceptionDetails> handlerUnavailableVolumeException(UnavailableVolumeException ex) {
         ExceptionDetails exceptionDetails = ExceptionDetails.builder()
                 .title("BAD REQUEST")
                 .message(ex.getMessage())
@@ -54,7 +54,7 @@ public class HandlerController {
     }
 
     @ExceptionHandler(InvalidEnumTypeException.class)
-    public ResponseEntity<ExceptionDetails> handleExceptions(InvalidEnumTypeException ex) {
+    public ResponseEntity<ExceptionDetails> handlerInvalidEnumTypeException(InvalidEnumTypeException ex) {
         ExceptionDetails exceptionDetails = ExceptionDetails.builder()
                 .title("BAD REQUEST")
                 .message(ex.getMessage())
@@ -64,9 +64,20 @@ public class HandlerController {
         return new ResponseEntity<>(exceptionDetails, HttpStatus.BAD_REQUEST);
     }
 
-
     @ExceptionHandler(InvalidSectorTypeException.class)
-    public ResponseEntity<ExceptionDetails> handleExceptions(InvalidSectorTypeException ex) {
+    public ResponseEntity<ExceptionDetails> handlerInvalidSectorTypeException(InvalidSectorTypeException ex) {
+
+        ExceptionDetails exceptionDetails = ExceptionDetails.builder()
+                .title("BAD REQUEST")
+                .message(ex.getMessage())
+                .timesTemp(LocalDateTime.now())
+                .build();
+
+        return new ResponseEntity<>(exceptionDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(PurchaseAlreadyFinishedException.class)
+    public ResponseEntity<ExceptionDetails> handlerPurchaseAlreadyFinishedException(PurchaseAlreadyFinishedException ex) {
 
         ExceptionDetails exceptionDetails = ExceptionDetails.builder()
                 .title("BAD REQUEST")
