@@ -36,7 +36,7 @@ public class ProductServiceTest {
     @BeforeEach
     void setup() {
         seller = new Seller(1L,"joao","31999999999","joao@email.com","12345678912345",null);
-        product = new Product(1L,"leite", Type.REFRIGERATED,seller,null);
+        product = new Product(1L,"leite", Type.REFRIGERATED, seller, null, null);
         productRequestDTO = new ProductRequestDTO("leite",Type.REFRIGERATED.name(),1L);
         productRequestDTOFail = new ProductRequestDTO("leite",Type.REFRIGERATED.name(),2L);
     }
