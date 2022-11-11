@@ -4,6 +4,7 @@ import com.bootcamp.melifrescos.dto.ProductListDTO;
 import com.bootcamp.melifrescos.dto.ProductRequestDTO;
 import com.bootcamp.melifrescos.dto.ProductResponseDTO;
 import com.bootcamp.melifrescos.enums.Type;
+import com.bootcamp.melifrescos.exceptions.NotFoundException;
 import com.bootcamp.melifrescos.interfaces.IProductService;
 import com.bootcamp.melifrescos.model.Product;
 import com.bootcamp.melifrescos.model.Seller;
@@ -45,7 +46,9 @@ public class ProductService implements IProductService {
      */
     @Override
     public Optional<Product> getById(Long id) {
-        return repo.findById(id);
+        Optional<Product> product = repo.findById(id);
+        if(product.isEmpty()) { throw new NotFoundException("Produto não encontrado."); }
+        return product;
     }
 
     /**
