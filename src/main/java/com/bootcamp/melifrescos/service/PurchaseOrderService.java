@@ -17,6 +17,10 @@ public class PurchaseOrderService implements IPurchaseOrderService {
 
     private final IPurchaseOrderRepo repo;
 
+    /**
+     * Método responsável por mudar o status da PurchaseOrder para FINISHED
+     * @param id PurchaseOrder a ser finalizada
+     */
     @Override
     public void updateStatusToFinished(Long id) {
         Optional<PurchaseOrder> optionalPurchaseOrder = repo.findById(id);
