@@ -31,7 +31,7 @@ public class ProductService implements IProductService {
             throw new RuntimeException("Vendedor nao existe");
         }
 
-        Product newProduct = new Product(null, product.getName(), Type.fromValue(product.getType()), seller,null);
+        Product newProduct = new Product(null, product.getName(), Type.fromValue(product.getType()), seller, null, null);
         return repo.save(newProduct);
     }
 

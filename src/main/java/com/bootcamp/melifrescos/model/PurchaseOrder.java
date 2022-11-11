@@ -1,6 +1,6 @@
 package com.bootcamp.melifrescos.model;
 
-import com.bootcamp.melifrescos.enums.Type;
+import com.bootcamp.melifrescos.enums.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,36 +8,32 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "products")
+@Table(name = "purchaseOrders")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product {
+public class PurchaseOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 100, nullable = false)
-    private String name;
+    @Column(nullable = false)
+    private LocalDateTime date;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Type type;
+    private OrderStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "idSeller")
-    @JsonIgnoreProperties("products")
-    private Seller seller;
+    @JoinColumn(name = "idBuyer")
+    @JsonIgnoreProperties("purchaseOrders")
+    private Buyer buyer;
 
-    @OneToMany(mappedBy = "product")
-    @JsonIgnoreProperties("product")
-    private List<Batch> batches;
-
-    @OneToMany(mappedBy = "product")
-    @JsonIgnoreProperties("product")
+    @OneToMany(mappedBy = "purchaseOrder")
+    @JsonIgnoreProperties("purchaseOrder")
     private List<ProductPurchaseOrder> productPurchaseOrders;
 }
