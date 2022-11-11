@@ -1,7 +1,5 @@
 package com.bootcamp.melifrescos.util;
 
-import com.bootcamp.melifrescos.enums.Type;
-
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.Documented;

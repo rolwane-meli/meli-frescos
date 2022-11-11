@@ -1,7 +1,6 @@
 package com.bootcamp.melifrescos.service;
 
 import com.bootcamp.melifrescos.dto.WarehouseRequestDTO;
-import com.bootcamp.melifrescos.dto.WarehouseResponseDTO;
 import com.bootcamp.melifrescos.exceptions.NotFoundException;
 import com.bootcamp.melifrescos.interfaces.IRepresentativeService;
 import com.bootcamp.melifrescos.interfaces.IWarehouseService;
@@ -37,5 +36,10 @@ public class WarehouseService implements IWarehouseService {
         Warehouse warehouse = new Warehouse(null, warehouseRequestDTO.getName(), representative.get(), null);
 
         return repo.save(warehouse);
+    }
+
+    @Override
+    public Optional<Warehouse> getById(Long id) {
+        return repo.findById(id);
     }
 }

@@ -1,20 +1,23 @@
 package com.bootcamp.melifrescos.dto;
 
 import com.bootcamp.melifrescos.enums.Type;
+import com.bootcamp.melifrescos.model.Product;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
 
 @AllArgsConstructor
-@NoArgsConstructor
 @Data
 public class ProductResponseDTO {
     private Long id;
     private String name;
     private Type type;
-    private BigDecimal price;
-    private int productQuantity;
-    private Long idBatch;
+    private Long sellerId;
+
+    public ProductResponseDTO(Product product) {
+        this.id = product.getId();
+        this.name = product.getName();
+        this.type = product.getType();
+        this.sellerId = product.getSeller().getId();
+    }
 }
+

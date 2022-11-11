@@ -17,6 +17,7 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties("warehouse")
 public class Representative {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +33,7 @@ public class Representative {
     private String email;
 
     @CPF
-    @Column(length = 11, nullable = false)
+    @Column(length = 14, nullable = false)
     @NotBlank(message = "O CPF é obrigatório.")
     private String cpf;
 
