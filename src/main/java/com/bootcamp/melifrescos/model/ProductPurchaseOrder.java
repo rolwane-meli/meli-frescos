@@ -26,6 +26,9 @@ public class ProductPurchaseOrder {
     @Column(nullable = false)
     private int productQuantity;
 
+    @Column(nullable = false)
+    private Long batchId;
+
     @ManyToOne
     @JoinColumn(name = "idPurchaseOrder")
     @JsonIgnoreProperties("productPurchaseOrders")
