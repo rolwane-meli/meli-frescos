@@ -14,8 +14,6 @@ import com.bootcamp.melifrescos.repository.IPurchaseOrderRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class PurchaseOrderService implements IPurchaseOrderService {
@@ -32,39 +30,52 @@ public class PurchaseOrderService implements IPurchaseOrderService {
      */
     @Override
     public void updateStatusToFinished(Long id) {
-        Optional<PurchaseOrder> optionalPurchaseOrder = repo.findById(id);
+        // Procura a purchaseOrder a ser finalizada
+        PurchaseOrder purchaseOrder = repo.findById(id).orElse(null);
 
-        if (optionalPurchaseOrder.isEmpty()) {
-            throw new NotFoundException("O carrinho informado não existe");
+        if (purchaseOrder == null) {
+            throw new NotFoundException("O carrinho de id: " + id + " não existe");
         }
-
-        PurchaseOrder purchaseOrder = optionalPurchaseOrder.get();
 
         if (purchaseOrder.getStatus() == OrderStatus.FINISHED) {
             throw new PurchaseAlreadyFinishedException("O carrinho já está finalizado");
         }
 
-        purchaseOrder.setStatus(OrderStatus.FINISHED);
+        // busca na tabela intermediária 'ProductPurchaseOrder' um registro com a referida purchaseOrder
+        ProductPurchaseOrder productPurchaseOrder = productPurchaseOrderService.getByPurchaseOrder(purchaseOrder);
 
-        ProductPurchaseOrder productPurchaseOrder = productPurchaseOrderService.getByPurchaseOrderId(purchaseOrder.getId());
-
+        // busca o lote que está no registro de 'ProductPurchaseOrder'
         Batch batch = batchService.getById(productPurchaseOrder.getBatchId()).orElse(null);
 
+        // muda o status da ordem de compra para FINISHED
+        purchaseOrder.setStatus(OrderStatus.FINISHED);
+
+        // atualiza a quantidade de produtos dispiníveis no lote
         batch.setProductQuantity(batch.getProductQuantity() - productPurchaseOrder.getProductQuantity());
 
-        BatchDTO batchDTO = new BatchDTO(
-                batch.getId(),
-                batch.getProduct().getId(),
-                batch.getCurrentTemperature(),
-                batch.getProductQuantity(),
-                batch.getManufacturingDate(),
-                batch.getManufacturingTime(),
-                batch.getVolume(),
-                batch.getDueDate(),
-                batch.getPrice()
-        );
+        // se o estoque estiver esgotado então zera o volume ocupado pelo lote
+        if (batch.getProductQuantity() == 0) {
+            batch.setVolume(0);
+        }
+
+        // monta o batchDTO para fazer a inserção no banco
+        BatchDTO batchDTO = this.mountBatchDTO(batch);
 
         batchService.create(batchDTO);
         repo.save(purchaseOrder);
+    }
+
+    private BatchDTO mountBatchDTO(Batch batch) {
+        return new BatchDTO(
+            batch.getId(),
+            batch.getProduct().getId(),
+            batch.getCurrentTemperature(),
+            batch.getProductQuantity(),
+            batch.getManufacturingDate(),
+            batch.getManufacturingTime(),
+            batch.getVolume(),
+            batch.getDueDate(),
+            batch.getPrice()
+        );
     }
 }
