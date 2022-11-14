@@ -34,7 +34,6 @@ public class BatchService implements IBatchService {
         Optional<Product> product = this.productService.getById(batchDTO.getProductId());
 
         if (batchDTO.getProductId()==null || product.isEmpty()) {
-            // TODO: trocar a exception  para uma personalizada
             throw new RuntimeException("Produto inválido");
         }
 
@@ -57,7 +56,6 @@ public class BatchService implements IBatchService {
             Optional<Product> product = this.productService.getById(b.getProductId());
 
             if (b.getProductId()==null || product.isEmpty()) {
-                // TODO: trocar a exception para uma personalizada
                 throw new RuntimeException("Lista de lotes, possuí um produto inválido");
             }
 
@@ -81,5 +79,23 @@ public class BatchService implements IBatchService {
         }
 
         return repo.findById(id);
+    }
+
+    @Override
+    public Boolean productMatchBatch(Long idBatch, Long idProduct) {
+        Optional<Batch> batch = getById(idBatch);
+        if(batch.get().getProduct().getId().equals(idProduct)) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Boolean quantityProductMatchBatch(Long idBatch, int quantityProduct) {
+        Optional<Batch> batch = getById(idBatch);
+        if(batch.get().getProductQuantity() >= quantityProduct) {
+            return true;
+        }
+        return false;
     }
 }

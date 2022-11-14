@@ -4,6 +4,8 @@ import com.bootcamp.melifrescos.dto.BatchListDTO;
 import com.bootcamp.melifrescos.dto.ProductWithBatchesDTO;
 import com.bootcamp.melifrescos.dto.ProductListDTO;
 import com.bootcamp.melifrescos.dto.ProductRequestDTO;
+import com.bootcamp.melifrescos.dto.ProductResponseDTO;
+import com.bootcamp.melifrescos.dto.PurchaseOrderResponse;
 import com.bootcamp.melifrescos.enums.Type;
 import com.bootcamp.melifrescos.exceptions.NotFoundException;
 import com.bootcamp.melifrescos.interfaces.IProductService;
