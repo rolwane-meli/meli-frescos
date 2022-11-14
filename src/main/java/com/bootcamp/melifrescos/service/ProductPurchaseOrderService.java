@@ -26,7 +26,7 @@ public class ProductPurchaseOrderService implements IProductPurchaseOrderService
     }
 
     @Override
-    public List<ProductPurchaseOrder> getAllProductPurchaseOrder(PurchaseOrder purchaseOrder) {
+    public List<ProductPurchaseOrder> getAllByPurchaseOrder(PurchaseOrder purchaseOrder) {
         return repo.findAllProductPurchaseOrderByPurchaseOrder(purchaseOrder);
     }
 }
