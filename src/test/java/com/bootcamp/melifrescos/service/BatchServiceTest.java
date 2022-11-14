@@ -121,4 +121,19 @@ public class BatchServiceTest {
             service.getById(999L);
         });
     }
+
+    @Test
+    void getBatchesBySector_returnBatches_whenbatchExistInSector(){
+        List<BatchDTO> batchList = new ArrayList<>();
+        batchList.add(batchDTO);
+
+        Mockito.when(repo.findBatchesBySectorAndDurDate(ArgumentMatchers.any(), ArgumentMatchers.anyLong()))
+                .thenReturn(batchList);
+
+        List<BatchDTO> result = service.getBatchesBySector(1L, 90);
+
+        assertThat(result).isNotEmpty();
+        assertThat(result.size()).isEqualTo(batchList.size());
+        assertThat(result.get(0)).isEqualTo(batchDTO);
+    }
 }
