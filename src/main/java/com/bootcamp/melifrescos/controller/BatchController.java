@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/fresh-products/batch")
 public class BatchController {
@@ -23,5 +25,10 @@ public class BatchController {
         BeanUtils.copyProperties(result, resultDto);
         resultDto.setProductId(result.getProduct().getId());
         return new ResponseEntity<>(resultDto, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/due-date")
+    public ResponseEntity<List<BatchDTO>> getAllBatchesBySector(@RequestParam Long sectorId, @RequestParam int numberOfDays){
+        return new ResponseEntity<>(service.getBatchesBySector(sectorId, numberOfDays), HttpStatus.OK);
     }
 }
