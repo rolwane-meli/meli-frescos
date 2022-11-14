@@ -34,17 +34,24 @@ public class BatchServiceTest {
 
     private Batch batch;
     private BatchDTO batchDTO;
+
+    private BatchDTO batchDTO1;
     private List<Batch> batchList = new ArrayList<>();
+
+    private List<BatchDTO> batchDTOlist = new ArrayList<>();
     private Product product;
     private InboundOrder inboundOrder;
 
     @BeforeEach
     void setup() {
         product = new Product(1L, "Leite", Type.REFRIGERATED, new Seller(), null, null);
-        batchDTO = new BatchDTO(null, 1L, -13.00, 5, LocalDate.now(), LocalTime.now(), 30.00, LocalDateTime.now(), new BigDecimal(7));
+        batchDTO = new BatchDTO(null, 1L, -13.00, 5, LocalDate.now(), LocalTime.now(), 30.00, LocalDateTime.from(LocalDateTime.now().plusDays(60)), new BigDecimal(7));
+        batchDTO1 = new BatchDTO(null, 1L, -13.00, 5, LocalDate.now(), LocalTime.now(), 30.00, LocalDateTime.from(LocalDateTime.now().plusDays(30)), new BigDecimal(7));
         batch = new Batch(1L, 8.00, 5, LocalDate.now(), LocalTime.now(), 30.00, LocalDateTime.now(), new BigDecimal(7), product, null);
         inboundOrder = new InboundOrder(1L,LocalDateTime.now(),new Sector(),null);
         batchList.add(batch);
+        batchDTOlist.add(batchDTO);
+        batchDTOlist.add(batchDTO1);
     }
 
     @Test
@@ -120,5 +127,25 @@ public class BatchServiceTest {
         assertThrows(BatchNotExistException.class, () -> {
             service.getById(999L);
         });
+    }
+
+    @Test
+    void getAllByDueDateAndCategory_returnBatchesFilteredByDueDateAndType_whenSuccessCase(){
+        Mockito.when(repo.getAllByDueDateAndCategory(ArgumentMatchers.any(),ArgumentMatchers.any()))
+                .thenReturn(batchDTOlist);
+
+        List<BatchDTO> filteredBatchDTO = service.getAllByDueDateAndCategory(61, Type.fromSigla("FF"));
+
+        assertThat(filteredBatchDTO.size()).isEqualTo(batchDTOlist.size());
+    }
+
+    @Test
+    void getAllByDueDateAndCategory_returnArrayEmpty_whenThereIsNoFilter(){
+        Mockito.when(repo.getAllByDueDateAndCategory(ArgumentMatchers.any(),ArgumentMatchers.any()))
+                .thenReturn(new ArrayList<>());
+
+        List<BatchDTO> filteredBatchDTO = service.getAllByDueDateAndCategory(10, Type.fromSigla("FF"));
+        
+        assertThat(filteredBatchDTO).isEmpty();
     }
 }
