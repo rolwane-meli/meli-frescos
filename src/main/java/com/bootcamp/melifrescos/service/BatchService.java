@@ -2,6 +2,7 @@ package com.bootcamp.melifrescos.service;
 
 import com.bootcamp.melifrescos.dto.BatchDTO;
 import com.bootcamp.melifrescos.exceptions.BatchNotExistException;
+import com.bootcamp.melifrescos.exceptions.NotFoundException;
 import com.bootcamp.melifrescos.interfaces.IBatchService;
 import com.bootcamp.melifrescos.interfaces.IProductService;
 import com.bootcamp.melifrescos.model.Batch;
@@ -79,11 +80,11 @@ public class BatchService implements IBatchService {
      * @throws BatchNotExistException quando o batch nao existe
      */
     @Override
-    public Optional<Batch> getById(Long id) throws BatchNotExistException {
+    public Optional<Batch> getById(Long id) {
         Optional<Batch> batchOptional = repo.findById(id);
 
         if(batchOptional.isEmpty()){
-            throw new BatchNotExistException("Lote não encontrado");
+            throw new NotFoundException("Lote não encontrado");
         }
 
         return repo.findById(id);
