@@ -1,6 +1,7 @@
 package com.bootcamp.melifrescos.service;
 
 import com.bootcamp.melifrescos.dto.BatchDTO;
+import com.bootcamp.melifrescos.enums.Type;
 import com.bootcamp.melifrescos.exceptions.BatchNotExistException;
 import com.bootcamp.melifrescos.exceptions.NotFoundException;
 import com.bootcamp.melifrescos.interfaces.IBatchService;
@@ -77,17 +78,22 @@ public class BatchService implements IBatchService {
      * Método responsável por obter um Batch por Id
      * @param id id do Batch
      * @return um batch
-     * @throws BatchNotExistException quando o batch nao existe
      */
     @Override
     public Optional<Batch> getById(Long id) {
-        Optional<Batch> batchOptional = repo.findById(id);
-
-        if(batchOptional.isEmpty()){
-            throw new NotFoundException("Lote não encontrado");
-        }
-
         return repo.findById(id);
+    }
+
+    /**
+     * Método responsável por filtrar uma lista de lotes por data de validade e tipo do produto
+     * @param days dias da validade
+     * @param type tipo do produto
+     * @return lista filtrada de lotes
+     */
+    @Override
+    public List<BatchDTO> getAllByDueDateAndCategory(int days, Type type) {
+        LocalDateTime dueDate = LocalDateTime.from(LocalDateTime.now().plusDays(days));
+        return repo.getAllByDueDateAndCategory(dueDate, type);
     }
 
     /**

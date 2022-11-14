@@ -1,6 +1,7 @@
 package com.bootcamp.melifrescos.controller;
 
 import com.bootcamp.melifrescos.dto.BatchDTO;
+import com.bootcamp.melifrescos.enums.Type;
 import com.bootcamp.melifrescos.interfaces.IBatchService;
 import com.bootcamp.melifrescos.model.Batch;
 import org.springframework.beans.BeanUtils;
@@ -25,6 +26,11 @@ public class BatchController {
         BeanUtils.copyProperties(result, resultDto);
         resultDto.setProductId(result.getProduct().getId());
         return new ResponseEntity<>(resultDto, HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public  ResponseEntity<List<BatchDTO>> getAllByDueDateAndCategory(@RequestParam int days,@RequestParam String type){
+        return new ResponseEntity<>(service.getAllByDueDateAndCategory(days,Type.fromSigla(type)), HttpStatus.OK);
     }
 
     @GetMapping("/due-date")

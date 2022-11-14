@@ -1,5 +1,6 @@
 package com.bootcamp.melifrescos.enums;
 
+import com.bootcamp.melifrescos.exceptions.NotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -24,6 +25,6 @@ public enum Type {
             }
         }
 
-        return null;
+        throw new NotFoundException("Tipo Invalido");
     }
 }
