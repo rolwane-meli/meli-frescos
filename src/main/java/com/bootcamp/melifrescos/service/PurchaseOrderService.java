@@ -54,6 +54,12 @@ public class PurchaseOrderService implements IPurchaseOrderService {
     }
 
 
+    /**
+     * If the purchase order is not present, throw a NotFoundException. If the purchase order is already finished, throw a
+     * PurchaseAlreadyFinishedException.
+     *
+     * @param purchaseOrderOptional Optional<PurchaseOrder>
+     */
     private void isPurchaseOrderValid(Optional<PurchaseOrder> purchaseOrderOptional) {
         if (purchaseOrderOptional.isEmpty()) {
             throw new NotFoundException("O carrinho informado não existe");
