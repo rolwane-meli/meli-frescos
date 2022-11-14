@@ -73,6 +73,11 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         repo.save(purchaseOrder);
     }
 
+    /**
+     * Método responsável por criar carrinho e se add produtos caso carrinho ja exista
+     * @param purchaseOrder recebe-se pelo body de acordo com PurchaseOrderRequest
+     * @return PurchaseOrderResponse
+     */
     @Override
     @Transactional
     public PurchaseOrderResponse create(PurchaseOrderRequest purchaseOrder) {
@@ -92,6 +97,11 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         return new PurchaseOrderResponse(purchaseOrder1.getStatus(), finalPrice, productPurchaseOrder);
     }
 
+    /**
+     * Método reponsável por calcular o preço total dos produtos.
+     * @param productPurchaseOrder (List)
+     * @return valor BigDecimal do total da compra do carrinho
+     */
     private static BigDecimal calcTotalPrice(List<ProductPurchaseOrder> productPurchaseOrder) {
         BigDecimal finalPrice = BigDecimal.ZERO;
         for (ProductPurchaseOrder product: productPurchaseOrder) {
