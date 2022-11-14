@@ -51,10 +51,10 @@ public class PurchaseOrderServiceTest {
     @BeforeEach
     public void setup() {
         product = new Product(1L, "Leite", Type.REFRIGERATED, null, null, null);
-        purchaseOrder = new PurchaseOrder(1L, LocalDateTime.now(), OrderStatus.OPEN, new Buyer(), null);
+        purchaseOrder = new PurchaseOrder(1L, LocalDateTime.now(), OrderStatus.OPEN, new Buyer());
         productPurchaseOrder = new ProductPurchaseOrder(1L, new BigDecimal("5.50"), 20, 1L, purchaseOrder, null);
         batch = new Batch(1L, 10, 20, LocalDate.now(), LocalTime.now(), 75, LocalDateTime.now(), new BigDecimal("5.50"), product, null);
-        purchaseOrderFinished = new PurchaseOrder(1L, LocalDateTime.now(), OrderStatus.FINISHED, new Buyer(), null);
+        purchaseOrderFinished = new PurchaseOrder(1L, LocalDateTime.now(), OrderStatus.FINISHED, new Buyer());
     }
 
     @Test
