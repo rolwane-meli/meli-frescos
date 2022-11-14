@@ -9,5 +9,5 @@ import java.util.List;
 public interface IProductPurchaseOrderService {
     ProductPurchaseOrder getByPurchaseOrder(PurchaseOrder purchaseOrder);
     ProductPurchaseOrder create(ProductPurchaseOrder productPurchaseOrder);
-    List<ProductPurchaseOrder> getAllProductPurchaseOrder(PurchaseOrder purchaseOrder);
+    List<ProductPurchaseOrder> getAllByPurchaseOrder(PurchaseOrder purchaseOrder);
 }
