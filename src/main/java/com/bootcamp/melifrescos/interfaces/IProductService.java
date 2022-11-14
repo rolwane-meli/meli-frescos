@@ -16,6 +16,4 @@ public interface IProductService {
 
     List<ProductListDTO> findProductsByBatches();
     List<ProductListDTO> findProductsByBatchesAndType(Type type);
-
-   PurchaseOrderResponse findProductByBatchesById(Long idBatch);
 }

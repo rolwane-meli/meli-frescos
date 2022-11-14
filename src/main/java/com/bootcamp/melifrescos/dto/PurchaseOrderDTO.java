@@ -31,6 +31,8 @@ public class PurchaseOrderDTO {
     @NotNull(message = "ID do vendedor é obrigatório.")
     private Long batchId;
 
+    private String status;
+
     @NotEmpty(message = "Adicione um produto na lista.")
     private List<PurchaseProductDTO> productDTOList;
 }

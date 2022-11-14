@@ -14,4 +14,8 @@ public interface IBatchService {
     List<Batch> createAll(List<BatchDTO> batches, InboundOrder inboundOrder);
 
     Optional<Batch> getById(Long id);
+
+    Boolean productMatchBatch(Long idBatch, Long idProduct);
+
+    Boolean quantityProductMatchBatch(Long idBatch, int quantityProduct);
 }

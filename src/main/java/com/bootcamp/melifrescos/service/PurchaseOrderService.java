@@ -4,6 +4,7 @@ import com.bootcamp.melifrescos.dto.ProductListDTO;
 import com.bootcamp.melifrescos.dto.PurchaseOrderDTO;
 import com.bootcamp.melifrescos.dto.PurchaseOrderResponse;
 import com.bootcamp.melifrescos.dto.PurchaseProductDTO;
+import com.bootcamp.melifrescos.exceptions.NoQuantityBatchProduct;
 import com.bootcamp.melifrescos.interfaces.*;
 import com.bootcamp.melifrescos.dto.BatchDTO;
 import com.bootcamp.melifrescos.enums.OrderStatus;
@@ -80,18 +81,28 @@ public class PurchaseOrderService implements IPurchaseOrderService {
     public PurchaseOrderResponse create(PurchaseOrderDTO purchaseOrder) {
         buyerService.getById(purchaseOrder.getBuyerId());
         batchService.getById(purchaseOrder.getBatchId());
+        purchaseOrder.getProductDTOList().forEach(b -> {
+            Boolean productMatchBatch = batchService.productMatchBatch(purchaseOrder.getBatchId(), b.getProductId());
+            if(productMatchBatch == false) {
+                throw new NotFoundException("Produto não encontrado no estoque.");
+            }
+        });
+        purchaseOrder.getProductDTOList().forEach(b -> {
+            Boolean quantityProductBatch = batchService.quantityProductMatchBatch(purchaseOrder.getBatchId(), b.getQuantity());
+            if (quantityProductBatch == false) {
+                throw new NoQuantityBatchProduct("O estoque não possui a quantidade de produto desejado.");
+            }
+        });
 
-        //verificando se produto existe no lote informado
-       purchaseOrder.getProductDTOList().forEach(p -> productService.findProductByBatchesById(purchaseOrder.getBatchId()));
-
-        System.out.println();
         BigDecimal totalPrice;
-
+    /*
         for (PurchaseProductDTO product: purchaseOrder.getProductDTOList()) {
             totalPrice = product.getQuantity();
         }
-        return new PurchaseOrderResponse();
 
+
+     */
+      return new PurchaseOrderResponse();
     }
 
     public Optional<PurchaseOrder> getById(Long id) {

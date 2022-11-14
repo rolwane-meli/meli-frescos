@@ -80,4 +80,22 @@ public class BatchService implements IBatchService {
 
         return repo.findById(id);
     }
+
+    @Override
+    public Boolean productMatchBatch(Long idBatch, Long idProduct) {
+        Optional<Batch> batch = getById(idBatch);
+        if(batch.get().getProduct().getId().equals(idProduct)) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Boolean quantityProductMatchBatch(Long idBatch, int quantityProduct) {
+        Optional<Batch> batch = getById(idBatch);
+        if(batch.get().getProductQuantity() >= quantityProduct) {
+            return true;
+        }
+        return false;
+    }
 }

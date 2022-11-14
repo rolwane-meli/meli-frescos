@@ -70,13 +70,4 @@ public class ProductService implements IProductService {
     public List<ProductListDTO> findProductsByBatchesAndType(Type type){
         return repo.findProductsByBatchesAndType(type);
     }
-
-    @Override
-    public PurchaseOrderResponse findProductByBatchesById(Long idBatch) {
-        Optional<PurchaseOrderResponse> batchProduct = repo.findProductByBatchesById(idBatch);
-        if(batchProduct.isEmpty()) { throw new NotFoundException("Produto não encontrado no estoque."); }
-
-        System.out.println(batchProduct.get());
-        return batchProduct.get();
-    }
 }

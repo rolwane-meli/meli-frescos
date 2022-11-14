@@ -24,7 +24,7 @@ public class HandlerController {
 
         ExceptionDetails exceptionDetails = ExceptionDetails.builder()
                 .title("BAD REQUEST")
-                .message("Argumentos da requisição inválidos.")
+                .message(ex.getMessage())
                 .timesTemp(LocalDateTime.now())
                 .errors(errors)
                 .build();
@@ -78,6 +78,18 @@ public class HandlerController {
 
     @ExceptionHandler(PurchaseAlreadyFinishedException.class)
     public ResponseEntity<ExceptionDetails> handlerPurchaseAlreadyFinishedException(PurchaseAlreadyFinishedException ex) {
+
+        ExceptionDetails exceptionDetails = ExceptionDetails.builder()
+                .title("BAD REQUEST")
+                .message(ex.getMessage())
+                .timesTemp(LocalDateTime.now())
+                .build();
+
+        return new ResponseEntity<>(exceptionDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NoQuantityBatchProduct.class)
+    public ResponseEntity<ExceptionDetails> handlerPurchaseAlreadyFinishedException(NoQuantityBatchProduct ex) {
 
         ExceptionDetails exceptionDetails = ExceptionDetails.builder()
                 .title("BAD REQUEST")

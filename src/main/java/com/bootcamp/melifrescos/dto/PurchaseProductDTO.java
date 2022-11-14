@@ -20,6 +20,6 @@ public class PurchaseProductDTO {
     @Min(value = 1, message = "ID do produto não pode ser zero ou negativo.")
     private Long productId;
 
-    @DecimalMin(value = "1", message = "Quantidade minima para compra é 1.")
-    private BigDecimal quantity;
+    @Min(value = 1, message = "Quantidade minima para compra é 1.")
+    private int quantity;
 }
