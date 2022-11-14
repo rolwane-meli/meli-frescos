@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface IBatchRepo extends JpaRepository<Batch, Long> {
+
     @Query("select " +
             "new com.bootcamp.melifrescos.dto.BatchDTO(b.id, b.product.id, b.currentTemperature, b.productQuantity, b.manufacturingDate, b.manufacturingTime, b.volume, b.dueDate, b.price)" +
             "from Batch b " +
