@@ -1,5 +1,6 @@
 package com.bootcamp.melifrescos.service;
 
+import com.bootcamp.melifrescos.dto.PurchaseOrderProductDTO;
 import com.bootcamp.melifrescos.enums.OrderStatus;
 import com.bootcamp.melifrescos.exceptions.NotFoundException;
 import com.bootcamp.melifrescos.exceptions.PurchaseAlreadyFinishedException;
@@ -9,6 +10,7 @@ import com.bootcamp.melifrescos.repository.IPurchaseOrderRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,18 +27,41 @@ public class PurchaseOrderService implements IPurchaseOrderService {
     public void updateStatusToFinished(Long id) {
         Optional<PurchaseOrder> optionalPurchaseOrder = repo.findById(id);
 
-        if (optionalPurchaseOrder.isEmpty()) {
-            throw new NotFoundException("O carrinho informado não existe");
-        }
+        isPurchaseOrderValid(optionalPurchaseOrder);
 
         PurchaseOrder purchaseOrder = optionalPurchaseOrder.get();
-
-        if (purchaseOrder.getStatus() == OrderStatus.FINISHED) {
-            throw new PurchaseAlreadyFinishedException("O carrinho já está finalizado");
-        }
 
         purchaseOrder.setStatus(OrderStatus.FINISHED);
 
         repo.save(purchaseOrder);
+    }
+
+
+    /**
+     * "If the purchase order exists and is not finished, return the products in it."
+     * The first thing we do is check if the purchase order exists. If it doesn't, we throw a NotFoundException
+     *
+     * @param id The id of the purchase order
+     * @return A list of PurchaseOrderProductDTO
+     */
+    @Override
+    public List<PurchaseOrderProductDTO> getProductsByPurchaseOrder(Long id) {
+        Optional<PurchaseOrder> optionalPurchaseOrder = repo.findById(id);
+
+        isPurchaseOrderValid(optionalPurchaseOrder);
+
+        return repo.findProductsByPurchaseOrder(id);
+    }
+
+
+    private void isPurchaseOrderValid(Optional<PurchaseOrder> purchaseOrderOptional) {
+        if (purchaseOrderOptional.isEmpty()) {
+            throw new NotFoundException("O carrinho informado não existe");
+        }
+        PurchaseOrder purchaseOrder = purchaseOrderOptional.get();
+
+        if (purchaseOrder.getStatus() == OrderStatus.FINISHED) {
+            throw new PurchaseAlreadyFinishedException("O carrinho já está finalizado");
+        }
     }
 }
