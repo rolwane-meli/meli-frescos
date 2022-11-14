@@ -109,14 +109,19 @@ public class PurchaseOrderService implements IPurchaseOrderService {
                 purchaseOrder.getProductDTO().getPrice(), purchaseOrder.getProductDTO().getQuantity(), batch.get().getProduct(), purchaseOrder.getBatchId()));
 
         List<ProductPurchaseOrder> productPurchaseOrder = productPurchaseOrderService.getAllByPurchaseOrder(purchaseOrder1);
+        BigDecimal finalPrice = calcTotalPrice(productPurchaseOrder);
 
+
+        return new PurchaseOrderResponse(purchaseOrder1.getStatus(), finalPrice, productPurchaseOrder);
+    }
+
+    private static BigDecimal calcTotalPrice(List<ProductPurchaseOrder> productPurchaseOrder) {
         BigDecimal finalPrice = BigDecimal.ZERO;
         for (ProductPurchaseOrder product: productPurchaseOrder) {
             BigDecimal totalPrice = product.getProductPrice().multiply(BigDecimal.valueOf(product.getProductQuantity()));
             finalPrice = finalPrice.add(totalPrice);
         }
-
-      return new PurchaseOrderResponse(purchaseOrder1.getStatus(), finalPrice, productPurchaseOrder);
+        return finalPrice;
     }
 
     public Optional<PurchaseOrder> getById(Long id) {
