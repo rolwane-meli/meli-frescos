@@ -1,6 +1,7 @@
 package com.bootcamp.melifrescos.service;
 
 import com.bootcamp.melifrescos.dto.BatchDTO;
+import com.bootcamp.melifrescos.enums.Type;
 import com.bootcamp.melifrescos.exceptions.BatchNotExistException;
 import com.bootcamp.melifrescos.exceptions.NotFoundException;
 import com.bootcamp.melifrescos.interfaces.IBatchService;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -81,5 +83,11 @@ public class BatchService implements IBatchService {
         }
 
         return repo.findById(id);
+    }
+
+    @Override
+    public List<BatchDTO> getAllByDueDateAndCategory(int days, Type type) {
+        LocalDateTime dueDate = LocalDateTime.from(LocalDateTime.now().plusDays(days));
+        return repo.getAllByDueDateAndCategory(dueDate, type);
     }
 }
