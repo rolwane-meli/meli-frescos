@@ -78,16 +78,9 @@ public class BatchService implements IBatchService {
      * Método responsável por obter um Batch por Id
      * @param id id do Batch
      * @return um batch
-     * @throws BatchNotExistException quando o batch nao existe
      */
     @Override
     public Optional<Batch> getById(Long id) {
-        Optional<Batch> batchOptional = repo.findById(id);
-
-        if(batchOptional.isEmpty()){
-            throw new NotFoundException("Lote não encontrado");
-        }
-
         return repo.findById(id);
     }
 

@@ -108,7 +108,7 @@ public class BatchServiceTest {
     }
 
     @Test
-    void getById_returnBatch_whenBatchExist() throws BatchNotExistException {
+    void getById_returnBatch_whenBatchExist()  {
         Mockito.when(repo.findById(ArgumentMatchers.anyLong()))
                 .thenReturn(Optional.of(batch));
 
@@ -117,16 +117,6 @@ public class BatchServiceTest {
         assertThat(resultBatch).isNotNull();
         assertThat(resultBatch).isEqualTo(batch);
         assertThat(resultBatch.getId()).isPositive();
-    }
-
-    @Test
-    void getById_returnException_whenBatchNotExist(){
-        Mockito.when(repo.findById(ArgumentMatchers.anyLong()))
-                .thenReturn(Optional.empty());
-
-        assertThrows(BatchNotExistException.class, () -> {
-            service.getById(999L);
-        });
     }
 
     @Test
