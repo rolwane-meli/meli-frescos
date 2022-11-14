@@ -22,4 +22,6 @@ public class PurchaseProductDTO {
 
     @Min(value = 1, message = "Quantidade minima para compra é 1.")
     private int quantity;
+
+    private BigDecimal price;
 }

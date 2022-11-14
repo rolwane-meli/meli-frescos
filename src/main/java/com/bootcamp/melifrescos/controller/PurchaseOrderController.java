@@ -1,6 +1,6 @@
 package com.bootcamp.melifrescos.controller;
 
-import com.bootcamp.melifrescos.dto.PurchaseOrderDTO;
+import com.bootcamp.melifrescos.dto.PurchaseOrderRequest;
 import com.bootcamp.melifrescos.dto.PurchaseOrderResponse;
 import com.bootcamp.melifrescos.interfaces.IPurchaseOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class PurchaseOrderController {
     }
 
     @PostMapping
-    public ResponseEntity<PurchaseOrderResponse> postPurchaseOrder(@RequestBody @Valid PurchaseOrderDTO purchaseOrder) {
+    public ResponseEntity<PurchaseOrderResponse> postPurchaseOrder(@RequestBody @Valid PurchaseOrderRequest purchaseOrder) {
         return new ResponseEntity<>(service.create(purchaseOrder), HttpStatus.CREATED);
     }
 }
