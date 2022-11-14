@@ -74,6 +74,7 @@ public class BatchService implements IBatchService {
         return repo.saveAll(batches);
     }
 
+    
     @Override
     public Optional<Batch> getById(Long id) {
         Optional<Batch> batchOptional = repo.findById(id);
@@ -85,6 +86,12 @@ public class BatchService implements IBatchService {
         return repo.findById(id);
     }
 
+    /**
+     * Método responsável por filtrar uma lista de lotes por data de validade e tipo do produto
+     * @param days dias da validade
+     * @param type tipo do produto
+     * @return lista filtrada de lotes
+     */
     @Override
     public List<BatchDTO> getAllByDueDateAndCategory(int days, Type type) {
         LocalDateTime dueDate = LocalDateTime.from(LocalDateTime.now().plusDays(days));
