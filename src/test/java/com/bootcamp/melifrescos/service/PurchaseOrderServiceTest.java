@@ -1,10 +1,14 @@
 package com.bootcamp.melifrescos.service;
 
+import com.bootcamp.melifrescos.dto.PurchaseOrderProductDTO;
 import com.bootcamp.melifrescos.enums.OrderStatus;
+import com.bootcamp.melifrescos.enums.Type;
 import com.bootcamp.melifrescos.exceptions.NotFoundException;
 import com.bootcamp.melifrescos.exceptions.PurchaseAlreadyFinishedException;
 import com.bootcamp.melifrescos.exceptions.UnavailableVolumeException;
 import com.bootcamp.melifrescos.model.Buyer;
+import com.bootcamp.melifrescos.model.Product;
+import com.bootcamp.melifrescos.model.ProductPurchaseOrder;
 import com.bootcamp.melifrescos.model.PurchaseOrder;
 import com.bootcamp.melifrescos.repository.IPurchaseOrderRepo;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +20,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -33,10 +40,16 @@ public class PurchaseOrderServiceTest {
 
     private PurchaseOrder purchaseOrder, purchaseOrderFinished;
 
+    private PurchaseOrderProductDTO purchaseOrderProductDTO;
+
+
     @BeforeEach
     public void setup() {
+        Product product = new Product(1L, "Leite", Type.REFRIGERATED, null, null, null);
+        ProductPurchaseOrder productPurchaseOrder = new ProductPurchaseOrder(1L, new BigDecimal("120"), 20, null, null);
         purchaseOrder = new PurchaseOrder(1L, LocalDateTime.now(), OrderStatus.OPEN, new Buyer(), null);
         purchaseOrderFinished = new PurchaseOrder(1L, LocalDateTime.now(), OrderStatus.FINISHED, new Buyer(), null);
+        purchaseOrderProductDTO = new PurchaseOrderProductDTO(1L, product.getName(), productPurchaseOrder.getProductPrice(), productPurchaseOrder.getProductQuantity());
     }
 
     @Test
@@ -72,4 +85,18 @@ public class PurchaseOrderServiceTest {
         });
     }
 
+    @Test
+    void getProductsByPurchaseOrder_giveAnValidPurchaseOrderId_returnAListOfProducts() {
+        Mockito.when(repo.findById(ArgumentMatchers.anyLong()))
+                .thenReturn(Optional.of(purchaseOrder));
+
+        Mockito.when(repo.findProductsByPurchaseOrder(ArgumentMatchers.anyLong()))
+                .thenReturn(List.of(purchaseOrderProductDTO));
+
+        List<PurchaseOrderProductDTO> resultPurchaseOrderProduct = service.getProductsByPurchaseOrder(1L);
+
+        assertThat(resultPurchaseOrderProduct).isNotNull();
+        assertThat(resultPurchaseOrderProduct.get(0).getId()).isPositive();
+        assertThat(resultPurchaseOrderProduct.get(0)).isEqualTo(purchaseOrderProductDTO);
+    }
 }
