@@ -65,6 +65,11 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         repo.save(purchaseOrder);
     }
 
+    /**
+     * Método responsável por converter um Batch em um batchDTO
+     * @param batch
+     * @return batchDTO
+     */
     private BatchDTO mountBatchDTO(Batch batch) {
         return new BatchDTO(
             batch.getId(),
