@@ -35,7 +35,6 @@ public class Batch {
     private double currentTemperature;
 
     @Column(length = 11, nullable = false)
-    @Min(value = 1, message = "A quantidade minima é 1.")
     @NotNull(message = "Quantidade é obrigatório.")
     private int productQuantity;
 
