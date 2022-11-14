@@ -2,6 +2,7 @@ package com.bootcamp.melifrescos.interfaces;
 
 import com.bootcamp.melifrescos.dto.ProductListDTO;
 import com.bootcamp.melifrescos.dto.ProductRequestDTO;
+import com.bootcamp.melifrescos.dto.PurchaseOrderResponse;
 import com.bootcamp.melifrescos.enums.Type;
 import com.bootcamp.melifrescos.model.Product;
 
@@ -16,5 +17,5 @@ public interface IProductService {
     List<ProductListDTO> findProductsByBatches();
     List<ProductListDTO> findProductsByBatchesAndType(Type type);
 
-
+   PurchaseOrderResponse findProductByBatchesById(Long idBatch);
 }

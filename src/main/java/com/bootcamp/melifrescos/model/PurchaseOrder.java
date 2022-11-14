@@ -34,6 +34,9 @@ public class PurchaseOrder {
     @JsonIgnoreProperties("purchaseOrders")
     private Buyer buyer;
 
+    @Column(nullable = false)
+    private Long batchId;
+
     @OneToMany(mappedBy = "purchaseOrder")
     @JsonIgnoreProperties("purchaseOrder")
     private List<ProductPurchaseOrder> productPurchaseOrders;

@@ -3,6 +3,7 @@ package com.bootcamp.melifrescos.service;
 import com.bootcamp.melifrescos.dto.ProductListDTO;
 import com.bootcamp.melifrescos.dto.ProductRequestDTO;
 import com.bootcamp.melifrescos.dto.ProductResponseDTO;
+import com.bootcamp.melifrescos.dto.PurchaseOrderResponse;
 import com.bootcamp.melifrescos.enums.Type;
 import com.bootcamp.melifrescos.exceptions.NotFoundException;
 import com.bootcamp.melifrescos.interfaces.IProductService;
@@ -68,5 +69,14 @@ public class ProductService implements IProductService {
     @Override
     public List<ProductListDTO> findProductsByBatchesAndType(Type type){
         return repo.findProductsByBatchesAndType(type);
+    }
+
+    @Override
+    public PurchaseOrderResponse findProductByBatchesById(Long idBatch) {
+        Optional<PurchaseOrderResponse> batchProduct = repo.findProductByBatchesById(idBatch);
+        if(batchProduct.isEmpty()) { throw new NotFoundException("Produto não encontrado no estoque."); }
+
+        System.out.println(batchProduct.get());
+        return batchProduct.get();
     }
 }

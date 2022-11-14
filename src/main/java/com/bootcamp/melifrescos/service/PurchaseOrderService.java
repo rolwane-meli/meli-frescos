@@ -4,15 +4,11 @@ import com.bootcamp.melifrescos.dto.ProductListDTO;
 import com.bootcamp.melifrescos.dto.PurchaseOrderDTO;
 import com.bootcamp.melifrescos.dto.PurchaseOrderResponse;
 import com.bootcamp.melifrescos.dto.PurchaseProductDTO;
-import com.bootcamp.melifrescos.interfaces.IBuyerService;
-import com.bootcamp.melifrescos.interfaces.IProductService;
+import com.bootcamp.melifrescos.interfaces.*;
 import com.bootcamp.melifrescos.dto.BatchDTO;
 import com.bootcamp.melifrescos.enums.OrderStatus;
 import com.bootcamp.melifrescos.exceptions.NotFoundException;
 import com.bootcamp.melifrescos.exceptions.PurchaseAlreadyFinishedException;
-import com.bootcamp.melifrescos.interfaces.IBatchService;
-import com.bootcamp.melifrescos.interfaces.IProductPurchaseOrderService;
-import com.bootcamp.melifrescos.interfaces.IPurchaseOrderService;
 import com.bootcamp.melifrescos.model.Buyer;
 import com.bootcamp.melifrescos.model.Product;
 import com.bootcamp.melifrescos.model.Batch;
@@ -33,9 +29,7 @@ public class PurchaseOrderService implements IPurchaseOrderService {
     private final IProductService productService;
     private final IBuyerService buyerService;
     private final IPurchaseOrderRepo repo;
-
     private final IProductPurchaseOrderService productPurchaseOrderService;
-
     private final IBatchService batchService;
 
     /**
@@ -80,14 +74,17 @@ public class PurchaseOrderService implements IPurchaseOrderService {
 
         batchService.create(batchDTO);
         repo.save(purchaseOrder);
-        /*
+    }
+
     @Override
     public PurchaseOrderResponse create(PurchaseOrderDTO purchaseOrder) {
-        Optional<Buyer> buyer = buyerService.getById(purchaseOrder.getBuyerId());
-        purchaseOrder.getProductDTOList().forEach(p -> productService.getById(p.getProductId()));
+        buyerService.getById(purchaseOrder.getBuyerId());
+        batchService.getById(purchaseOrder.getBatchId());
 
-        List<ProductListDTO> productsBuyer = productService.findProductsByBatches()
+        //verificando se produto existe no lote informado
+       purchaseOrder.getProductDTOList().forEach(p -> productService.findProductByBatchesById(purchaseOrder.getBatchId()));
 
+        System.out.println();
         BigDecimal totalPrice;
 
         for (PurchaseProductDTO product: purchaseOrder.getProductDTOList()) {
@@ -101,5 +98,4 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         return repo.findById(id);
     }
 
-         */
 }
