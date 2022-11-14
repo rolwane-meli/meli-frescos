@@ -1,6 +1,7 @@
 package com.bootcamp.melifrescos.service;
 
 import com.bootcamp.melifrescos.dto.BatchDTO;
+import com.bootcamp.melifrescos.dto.PurchaseOrderProductDTO;
 import com.bootcamp.melifrescos.enums.OrderStatus;
 import com.bootcamp.melifrescos.exceptions.NotFoundException;
 import com.bootcamp.melifrescos.exceptions.PurchaseAlreadyFinishedException;
@@ -13,6 +14,9 @@ import com.bootcamp.melifrescos.model.PurchaseOrder;
 import com.bootcamp.melifrescos.repository.IPurchaseOrderRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +54,7 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         // muda o status da ordem de compra para FINISHED
         purchaseOrder.setStatus(OrderStatus.FINISHED);
 
-        // atualiza a quantidade de produtos dispiníveis no lote
+        // atualiza a quantidade de produtos disponíveis no lote
         batch.setProductQuantity(batch.getProductQuantity() - productPurchaseOrder.getProductQuantity());
 
         // se o estoque estiver esgotado então zera o volume ocupado pelo lote
@@ -65,10 +69,12 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         repo.save(purchaseOrder);
     }
 
+
     /**
-     * Método responsável por converter um Batch em um batchDTO
-     * @param batch
-     * @return batchDTO
+     * It takes a Batch object and returns a BatchDTO object
+     *
+     * @param batch the batch object that we want to convert to a DTO
+     * @return A BatchDTO object.
      */
     private BatchDTO mountBatchDTO(Batch batch) {
         return new BatchDTO(
@@ -82,5 +88,28 @@ public class PurchaseOrderService implements IPurchaseOrderService {
             batch.getDueDate(),
             batch.getPrice()
         );
+    }
+
+
+    /**
+     * "If the purchase order exists and is not finished, return the products in it."
+     * The first thing we do is check if the purchase order exists. If it doesn't, we throw a NotFoundException
+     *
+     * @param id The id of the purchase order
+     * @return A list of PurchaseOrderProductDTO
+     */
+    @Override
+    public List<PurchaseOrderProductDTO> getProductsByPurchaseOrder(Long id) {
+        Optional<PurchaseOrder> optionalPurchaseOrder = repo.findById(id);
+        if (optionalPurchaseOrder.isEmpty()) {
+            throw new NotFoundException("O carrinho informado não existe");
+        }
+        PurchaseOrder purchaseOrder = optionalPurchaseOrder.get();
+
+        if (purchaseOrder.getStatus() == OrderStatus.FINISHED) {
+            throw new PurchaseAlreadyFinishedException("O carrinho já está finalizado");
+        }
+
+        return repo.findProductsByPurchaseOrder(id);
     }
 }

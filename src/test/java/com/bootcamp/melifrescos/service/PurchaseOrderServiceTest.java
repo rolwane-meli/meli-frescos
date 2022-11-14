@@ -1,5 +1,6 @@
 package com.bootcamp.melifrescos.service;
 
+import com.bootcamp.melifrescos.dto.PurchaseOrderProductDTO;
 import com.bootcamp.melifrescos.enums.OrderStatus;
 import com.bootcamp.melifrescos.enums.Type;
 import com.bootcamp.melifrescos.exceptions.NotFoundException;
@@ -20,6 +21,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -48,6 +50,9 @@ public class PurchaseOrderServiceTest {
 
     private Batch batch;
 
+    private PurchaseOrderProductDTO purchaseOrderProductDTO;
+
+
     @BeforeEach
     public void setup() {
         product = new Product(1L, "Leite", Type.REFRIGERATED, null, null, null);
@@ -55,6 +60,7 @@ public class PurchaseOrderServiceTest {
         productPurchaseOrder = new ProductPurchaseOrder(1L, new BigDecimal("5.50"), 20, 1L, purchaseOrder, null);
         batch = new Batch(1L, 10, 20, LocalDate.now(), LocalTime.now(), 75, LocalDateTime.now(), new BigDecimal("5.50"), product, null);
         purchaseOrderFinished = new PurchaseOrder(1L, LocalDateTime.now(), OrderStatus.FINISHED, new Buyer(), null);
+        purchaseOrderProductDTO = new PurchaseOrderProductDTO(1L, product.getName(), productPurchaseOrder.getProductPrice(), productPurchaseOrder.getProductQuantity());
     }
 
     @Test
@@ -97,4 +103,18 @@ public class PurchaseOrderServiceTest {
         });
     }
 
+    @Test
+    void getProductsByPurchaseOrder_giveAnValidPurchaseOrderId_returnAListOfProducts() {
+        Mockito.when(repo.findById(ArgumentMatchers.anyLong()))
+                .thenReturn(Optional.of(purchaseOrder));
+
+        Mockito.when(repo.findProductsByPurchaseOrder(ArgumentMatchers.anyLong()))
+                .thenReturn(List.of(purchaseOrderProductDTO));
+
+        List<PurchaseOrderProductDTO> resultPurchaseOrderProduct = service.getProductsByPurchaseOrder(1L);
+
+        assertThat(resultPurchaseOrderProduct).isNotNull();
+        assertThat(resultPurchaseOrderProduct.get(0).getId()).isPositive();
+        assertThat(resultPurchaseOrderProduct.get(0)).isEqualTo(purchaseOrderProductDTO);
+    }
 }
