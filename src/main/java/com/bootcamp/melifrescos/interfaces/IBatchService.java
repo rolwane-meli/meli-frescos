@@ -14,7 +14,9 @@ public interface IBatchService {
 
     List<Batch> createAll(List<BatchDTO> batches, InboundOrder inboundOrder);
 
-    Optional<Batch> getById(Long id);
+    Optional<Batch> getById(Long id) throws BatchNotExistException;
+
+    List<BatchDTO> getBatchesBySector(Long sectorId, int days);
 
     List<BatchDTO> getAllByDueDateAndCategory(int days, Type type);
 }

@@ -74,7 +74,12 @@ public class BatchService implements IBatchService {
         return repo.saveAll(batches);
     }
 
-    
+    /**
+     * Método responsável por obter um Batch por Id
+     * @param id id do Batch
+     * @return um batch
+     * @throws BatchNotExistException quando o batch nao existe
+     */
     @Override
     public Optional<Batch> getById(Long id) {
         Optional<Batch> batchOptional = repo.findById(id);
@@ -96,5 +101,17 @@ public class BatchService implements IBatchService {
     public List<BatchDTO> getAllByDueDateAndCategory(int days, Type type) {
         LocalDateTime dueDate = LocalDateTime.from(LocalDateTime.now().plusDays(days));
         return repo.getAllByDueDateAndCategory(dueDate, type);
+    }
+
+    /**
+     * Método responsavel por buscar todos os lotes de um setor ordenado pela data de validade
+     * @param sectorId Id do setor
+     * @param days periodo da data de validade
+     * @return lista de lotes por setor
+     */
+    @Override
+    public List<BatchDTO> getBatchesBySector(Long sectorId, int days){
+        LocalDateTime dueDate = LocalDateTime.now().plusDays(days);
+        return repo.findBatchesBySectorAndDurDate(dueDate, sectorId);
     }
 }

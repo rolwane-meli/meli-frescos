@@ -32,4 +32,9 @@ public class BatchController {
     public  ResponseEntity<List<BatchDTO>> getAllByDueDateAndCategory(@RequestParam int days,@RequestParam String type){
         return new ResponseEntity<>(service.getAllByDueDateAndCategory(days,Type.fromSigla(type)), HttpStatus.OK);
     }
+
+    @GetMapping("/due-date")
+    public ResponseEntity<List<BatchDTO>> getAllBatchesBySector(@RequestParam Long sectorId, @RequestParam int numberOfDays){
+        return new ResponseEntity<>(service.getBatchesBySector(sectorId, numberOfDays), HttpStatus.OK);
+    }
 }

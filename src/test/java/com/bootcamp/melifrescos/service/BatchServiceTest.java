@@ -130,6 +130,21 @@ public class BatchServiceTest {
     }
 
     @Test
+    void getBatchesBySector_returnBatches_whenbatchExistInSector(){
+        List<BatchDTO> batchList = new ArrayList<>();
+        batchList.add(batchDTO);
+
+        Mockito.when(repo.findBatchesBySectorAndDurDate(ArgumentMatchers.any(), ArgumentMatchers.anyLong()))
+                .thenReturn(batchList);
+
+        List<BatchDTO> result = service.getBatchesBySector(1L, 90);
+
+        assertThat(result).isNotEmpty();
+        assertThat(result.size()).isEqualTo(batchList.size());
+        assertThat(result.get(0)).isEqualTo(batchDTO);
+    }
+
+    @Test
     void getAllByDueDateAndCategory_returnBatchesFilteredByDueDateAndType_whenSuccessCase(){
         Mockito.when(repo.getAllByDueDateAndCategory(ArgumentMatchers.any(),ArgumentMatchers.any()))
                 .thenReturn(batchDTOlist);
@@ -145,7 +160,7 @@ public class BatchServiceTest {
                 .thenReturn(new ArrayList<>());
 
         List<BatchDTO> filteredBatchDTO = service.getAllByDueDateAndCategory(10, Type.fromSigla("FF"));
-        
+
         assertThat(filteredBatchDTO).isEmpty();
     }
 }
