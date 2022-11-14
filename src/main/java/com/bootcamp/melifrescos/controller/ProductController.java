@@ -1,5 +1,6 @@
 package com.bootcamp.melifrescos.controller;
 
+import com.bootcamp.melifrescos.dto.ProductWithBatchesDTO;
 import com.bootcamp.melifrescos.dto.ProductListDTO;
 import com.bootcamp.melifrescos.dto.ProductRequestDTO;
 import com.bootcamp.melifrescos.dto.ProductResponseDTO;
@@ -44,5 +45,15 @@ public class ProductController {
         }
 
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductWithBatchesDTO> getByIdWithBatches(@PathVariable Long id){
+        return new ResponseEntity<>(service.getByIdWithBatches(id),HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}", params = {"orderByType"})
+    public ResponseEntity<ProductWithBatchesDTO> getByIdWithSortedBatches(@PathVariable Long id, @RequestParam String orderByType){
+        return new ResponseEntity<>(service.getByIdWithSortedBatches(id,orderByType),HttpStatus.OK);
     }
 }
