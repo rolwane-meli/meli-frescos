@@ -36,7 +36,9 @@ public class PurchaseOrderService implements IPurchaseOrderService {
      * @param id PurchaseOrder a ser finalizada
      */
     @Override
+    @Transactional
     public void updateStatusToFinished(Long id) {
+
         // Procura a purchaseOrder a ser finalizada
         PurchaseOrder purchaseOrder = repo.findById(id).orElse(null);
 
@@ -51,6 +53,19 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         // busca na tabela intermediária 'ProductPurchaseOrder' todos os registros com a referida purchaseOrder
         List<ProductPurchaseOrder> productPurchaseOrders = productPurchaseOrderService.getAllByPurchaseOrder(purchaseOrder);
 
+        this.updateBatches(productPurchaseOrders);
+
+        // muda o status da ordem de compra para FINISHED
+        purchaseOrder.setStatus(OrderStatus.FINISHED);
+
+        repo.save(purchaseOrder);
+    }
+
+    /**
+     * Método responsável por atualizar o estoque dos lotes, caso estoque vazio o volume é zerado.
+     * @param productPurchaseOrders
+     */
+    private void updateBatches(List<ProductPurchaseOrder> productPurchaseOrders) {
         productPurchaseOrders.forEach((productPurchaseOrder) -> {
             // busca o lote que está no registro de 'ProductPurchaseOrder'
             Batch batch = batchService.getById(productPurchaseOrder.getBatchId()).orElse(null);
@@ -68,11 +83,6 @@ public class PurchaseOrderService implements IPurchaseOrderService {
 
             batchService.create(batchDTO);
         });
-
-        // muda o status da ordem de compra para FINISHED
-        purchaseOrder.setStatus(OrderStatus.FINISHED);
-
-        repo.save(purchaseOrder);
     }
 
     /**
@@ -127,5 +137,4 @@ public class PurchaseOrderService implements IPurchaseOrderService {
     public Optional<PurchaseOrder> getById(Long id) {
         return repo.findById(id);
     }
-
 }
