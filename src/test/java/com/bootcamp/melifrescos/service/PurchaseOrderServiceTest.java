@@ -20,6 +20,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -42,28 +45,31 @@ public class PurchaseOrderServiceTest {
 
     private PurchaseOrder purchaseOrder, purchaseOrderFinished;
 
-    private Product product;
-
     private ProductPurchaseOrder productPurchaseOrder;
+
+    private List<ProductPurchaseOrder> productPurchaseOrders = new ArrayList<>();
 
     private Batch batch;
 
     @BeforeEach
     public void setup() {
-        product = new Product(1L, "Leite", Type.REFRIGERATED, null, null, null);
+        Product product = new Product(1L, "Leite", Type.REFRIGERATED, null, null, null);
         purchaseOrder = new PurchaseOrder(1L, LocalDateTime.now(), OrderStatus.OPEN, new Buyer());
-        productPurchaseOrder = new ProductPurchaseOrder(1L, new BigDecimal("5.50"), 20, 1L, purchaseOrder, null);
-        batch = new Batch(1L, 10, 20, LocalDate.now(), LocalTime.now(), 75, LocalDateTime.now(), new BigDecimal("5.50"), product, null);
+        productPurchaseOrder = new ProductPurchaseOrder(1L, new BigDecimal("5.50"), 20, 1L, purchaseOrder, product);
+        batch = new Batch(1L, 10, 20, LocalDate.now(), LocalTime.now(), 75, LocalDateTime.now(), new BigDecimal("5.50"), new Product(), null);
         purchaseOrderFinished = new PurchaseOrder(1L, LocalDateTime.now(), OrderStatus.FINISHED, new Buyer());
+
+        productPurchaseOrders.add(productPurchaseOrder);
     }
 
     @Test
     public void updateStatusToFinished_givenAnExistingId_updateStatus() {
+
         Mockito.when(repo.findById(ArgumentMatchers.anyLong()))
                 .thenReturn(Optional.of(purchaseOrder));
 
-        Mockito.when(productPurchaseOrderService.getByPurchaseOrder(ArgumentMatchers.any()))
-                .thenReturn(productPurchaseOrder);
+        Mockito.when(productPurchaseOrderService.getAllByPurchaseOrder(ArgumentMatchers.any()))
+                .thenReturn(productPurchaseOrders);
 
         Mockito.when(batchService.getById(ArgumentMatchers.anyLong()))
                 .thenReturn(Optional.of(batch));
