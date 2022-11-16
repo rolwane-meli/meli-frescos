@@ -1,6 +1,17 @@
--- ============================= BUYERS ============================= --
+-- ============================= RESET TABLES ============================= --
+DROP TABLE IF EXISTS `product_purchase_orders`;
+DROP TABLE IF EXISTS `purchase_orders`;
 DROP TABLE IF EXISTS `buyers`;
+DROP TABLE IF EXISTS `batches`;
+DROP TABLE IF EXISTS `products`;
+DROP TABLE IF EXISTS `sellers`;
+DROP TABLE IF EXISTS `inbound_orders`;
+DROP TABLE IF EXISTS `sectors`;
+DROP TABLE IF EXISTS `warehouses`;
+DROP TABLE IF EXISTS `representatives`;
 
+
+-- ============================= BUYERS ============================= --
 CREATE TABLE `buyers` (
     `id` bigint NOT NULL AUTO_INCREMENT,
     `cpf` varchar(14) NOT NULL UNIQUE,
@@ -15,8 +26,6 @@ INSERT INTO `buyers` VALUES (1,'45678912300','augusto.liberato@mercadolivre.com'
 
 
 -- ============================= SELLERS ============================= --
-DROP TABLE IF EXISTS `sellers`;
-
 CREATE TABLE `sellers` (
     `id` bigint NOT NULL AUTO_INCREMENT,
     `cnpj` varchar(20) NOT NULL UNIQUE,
@@ -33,8 +42,6 @@ INSERT INTO `sellers` VALUES (1,'40005821000135','maria.lopes@gmail.com','Maria 
 
 
 -- ============================= REPRESENTATIVES ============================= --
-DROP TABLE IF EXISTS `representatives`;
-
 CREATE TABLE `representatives` (
     `id` bigint NOT NULL AUTO_INCREMENT,
     `cpf` varchar(14) NOT NULL UNIQUE,
@@ -51,8 +58,6 @@ INSERT INTO `representatives` VALUES (1,'90142253790','ana.reis@hotmail.com','An
 
 
 -- ============================= PRODUCTS ============================= --
-DROP TABLE IF EXISTS `products`;
-
 CREATE TABLE `products` (
     `id` bigint NOT NULL AUTO_INCREMENT,
     `name` varchar(100) NOT NULL,
@@ -75,8 +80,6 @@ INSERT INTO `products` VALUES (1,'Leite','REFRIGERATED',1),
 
 
 -- ============================= WAREHOUSES ============================= --
-DROP TABLE IF EXISTS `warehouses`;
-
 CREATE TABLE `warehouses` (
     `id` bigint NOT NULL AUTO_INCREMENT,
     `name` varchar(45) NOT NULL,
@@ -93,8 +96,6 @@ INSERT INTO `warehouses` VALUES (1,'meli-sp1',1),
 
 
 -- ============================= SECTORS ============================= --
-DROP TABLE IF EXISTS `sectors`;
-
 CREATE TABLE `sectors` (
     `id` bigint NOT NULL AUTO_INCREMENT,
     `capacity` double NOT NULL,
@@ -121,8 +122,6 @@ INSERT INTO `sectors` VALUES (1,10,'ST-01','FROZEN',1),
 
 
 -- ============================= INBOUND ORDER ============================= --
-DROP TABLE IF EXISTS `inbound_orders`;
-
 CREATE TABLE `inbound_orders` (
     `id` bigint NOT NULL AUTO_INCREMENT,
     `order_date` datetime(6) NOT NULL,
@@ -144,8 +143,6 @@ INSERT INTO `inbound_orders` VALUES (1,'2022-04-22 14:30:02.123000',1),
 
 
 -- ============================= BATCHES ============================= --
-DROP TABLE IF EXISTS `batches`;
-
 CREATE TABLE `batches` (
     `id` bigint NOT NULL AUTO_INCREMENT,
     `current_temperature` double NOT NULL,

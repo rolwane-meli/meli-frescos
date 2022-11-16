@@ -6,6 +6,7 @@ import com.bootcamp.melifrescos.dto.PurchaseProductDTO;
 import com.bootcamp.melifrescos.exceptions.NoQuantityBatchProduct;
 import com.bootcamp.melifrescos.interfaces.*;
 import com.bootcamp.melifrescos.dto.BatchDTO;
+import com.bootcamp.melifrescos.dto.PurchaseOrderProductDTO;
 import com.bootcamp.melifrescos.enums.OrderStatus;
 import com.bootcamp.melifrescos.exceptions.NotFoundException;
 import com.bootcamp.melifrescos.exceptions.PurchaseAlreadyFinishedException;
@@ -17,6 +18,7 @@ import com.bootcamp.melifrescos.repository.IPurchaseOrderRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import javax.transaction.Transactional;
 import java.beans.Transient;
 import java.math.BigDecimal;
@@ -38,7 +40,6 @@ public class PurchaseOrderService implements IPurchaseOrderService {
     @Override
     @Transactional
     public void updateStatusToFinished(Long id) {
-
         // Procura a purchaseOrder a ser finalizada
         PurchaseOrder purchaseOrder = repo.findById(id).orElse(null);
 
@@ -85,6 +86,7 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         });
     }
 
+
     /**
      * Método responsável por converter um Batch em um batchDTO
      * @param batch
@@ -104,6 +106,35 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         );
     }
 
+
+
+    /**
+     * "If the purchase order exists and is not finished, return the products in it."
+     * The first thing we do is check if the purchase order exists. If it doesn't, we throw a NotFoundException
+     *
+     * @param id The id of the purchase order
+     * @return A list of PurchaseOrderProductDTO
+     */
+    @Override
+    public List<PurchaseOrderProductDTO> getProductsByPurchaseOrder(Long id) {
+        Optional<PurchaseOrder> optionalPurchaseOrder = repo.findById(id);
+        if (optionalPurchaseOrder.isEmpty()) {
+            throw new NotFoundException("O carrinho informado não existe");
+        }
+        PurchaseOrder purchaseOrder = optionalPurchaseOrder.get();
+
+        if (purchaseOrder.getStatus() == OrderStatus.FINISHED) {
+            throw new PurchaseAlreadyFinishedException("O carrinho já está finalizado");
+        }
+
+        return repo.findProductsByPurchaseOrder(id);
+    }
+
+    /**
+     * Método responsável por criar carrinho e se add produtos caso carrinho ja exista
+     * @param purchaseOrder recebe-se pelo body de acordo com PurchaseOrderRequest
+     * @return PurchaseOrderResponse
+     */
     @Override
     @Transactional
     public PurchaseOrderResponse create(PurchaseOrderRequest purchaseOrder) {
@@ -125,6 +156,11 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         return new PurchaseOrderResponse(purchaseOrder1.getStatus(), finalPrice, productPurchaseOrder);
     }
 
+    /**
+     * Método reponsável por calcular o preço total dos produtos.
+     * @param productPurchaseOrder (List)
+     * @return valor BigDecimal do total da compra do carrinho
+     */
     private static BigDecimal calcTotalPrice(List<ProductPurchaseOrder> productPurchaseOrder) {
         BigDecimal finalPrice = BigDecimal.ZERO;
         for (ProductPurchaseOrder product: productPurchaseOrder) {
