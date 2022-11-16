@@ -16,8 +16,8 @@ public class ProductPurchaseOrderService implements IProductPurchaseOrderService
     private final IProductPurchaseOrderRepo repo;
 
     @Override
-    public ProductPurchaseOrder getByPurchaseOrderId(Long id) {
-        return repo.findProductPurchaseOrderByPurchaseOrder(id);
+    public ProductPurchaseOrder getByPurchaseOrder(PurchaseOrder purchaseOrder) {
+        return repo.findProductPurchaseOrderByPurchaseOrder(purchaseOrder);
     }
 
     @Override

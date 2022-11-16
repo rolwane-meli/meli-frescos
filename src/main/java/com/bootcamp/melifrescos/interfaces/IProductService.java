@@ -1,5 +1,6 @@
 package com.bootcamp.melifrescos.interfaces;
 
+import com.bootcamp.melifrescos.dto.ProductWithBatchesDTO;
 import com.bootcamp.melifrescos.dto.ProductListDTO;
 import com.bootcamp.melifrescos.dto.ProductRequestDTO;
 import com.bootcamp.melifrescos.dto.PurchaseOrderResponse;
@@ -16,4 +17,8 @@ public interface IProductService {
 
     List<ProductListDTO> findProductsByBatches();
     List<ProductListDTO> findProductsByBatchesAndType(Type type);
+
+    ProductWithBatchesDTO getByIdWithBatches(Long idProduct);
+
+    ProductWithBatchesDTO getByIdWithSortedBatches(Long idProduct,String type);
 }

@@ -1,16 +1,15 @@
 package com.bootcamp.melifrescos.service;
 
+import com.bootcamp.melifrescos.dto.PurchaseOrderProductDTO;
 import com.bootcamp.melifrescos.dto.PurchaseOrderRequest;
 import com.bootcamp.melifrescos.dto.PurchaseOrderResponse;
 import com.bootcamp.melifrescos.dto.PurchaseProductDTO;
 import com.bootcamp.melifrescos.enums.OrderStatus;
+import com.bootcamp.melifrescos.enums.Type;
 import com.bootcamp.melifrescos.exceptions.NoQuantityBatchProduct;
 import com.bootcamp.melifrescos.exceptions.NotFoundException;
 import com.bootcamp.melifrescos.exceptions.PurchaseAlreadyFinishedException;
-import com.bootcamp.melifrescos.interfaces.IBatchService;
-import com.bootcamp.melifrescos.interfaces.IBuyerService;
-import com.bootcamp.melifrescos.interfaces.IProductPurchaseOrderService;
-import com.bootcamp.melifrescos.interfaces.IPurchaseOrderService;
+import com.bootcamp.melifrescos.exceptions.UnavailableVolumeException;
 import com.bootcamp.melifrescos.model.*;
 import com.bootcamp.melifrescos.repository.IPurchaseOrderRepo;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,24 +37,29 @@ public class PurchaseOrderServiceTest {
 
     @InjectMocks
     private PurchaseOrderService service;
+
+    @Mock
+    private ProductPurchaseOrderService productPurchaseOrderService;
+
+    @Mock
+    private BatchService batchService;
+
     @Mock
     private IPurchaseOrderRepo repo;
-    @Mock
-    private IBatchService batchService;
 
     @Mock
-    private IBuyerService buyerService;
-
-    @Mock
-    private IProductPurchaseOrderService productPurchaseService;
+    private BuyerService buyerService;
 
     private PurchaseOrder purchaseOrder, purchaseOrderFinished;
     private Batch batch;
     private PurchaseOrderRequest purchaseRequest;
-
     private PurchaseOrderResponse purchaseResponse;
+    private List<ProductPurchaseOrder> productPurchaseList = new ArrayList<>();
+    private Product product;
 
-    private List<ProductPurchaseOrder> productPurchaseOrder = new ArrayList<>();
+    private ProductPurchaseOrder productPurchaseOrder;
+    private PurchaseOrderProductDTO purchaseOrderProductDTO;
+
 
     @BeforeEach
     public void setup() {
@@ -64,8 +68,14 @@ public class PurchaseOrderServiceTest {
         batch = new Batch(1L, 12, 12, LocalDate.now(), LocalTime.now(), 1,
                 LocalDateTime.now(), new BigDecimal("0"), new Product(), new InboundOrder());
         purchaseRequest = new PurchaseOrderRequest(1L, 1L, 1L, new PurchaseProductDTO(1L, 1, new BigDecimal("0")));
-        purchaseResponse = new PurchaseOrderResponse(OrderStatus.OPEN, new BigDecimal("0"), productPurchaseOrder);
-       productPurchaseOrder.add(new ProductPurchaseOrder(1L, new BigDecimal("0"), 1, 1L, purchaseOrder, batch.getProduct()));
+        purchaseResponse = new PurchaseOrderResponse(OrderStatus.OPEN, new BigDecimal("0"), productPurchaseList);
+        productPurchaseList.add(new ProductPurchaseOrder(1L, new BigDecimal("0"), 1, 1L, purchaseOrder, batch.getProduct()));
+        product = new Product(1L, "Leite", Type.REFRIGERATED, null, null, null);
+        purchaseOrder = new PurchaseOrder(1L, LocalDateTime.now(), OrderStatus.OPEN, new Buyer());
+        productPurchaseOrder = new ProductPurchaseOrder(1L, new BigDecimal("5.50"), 20, 1L, purchaseOrder, null);
+        batch = new Batch(1L, 10, 20, LocalDate.now(), LocalTime.now(), 75, LocalDateTime.now(), new BigDecimal("5.50"), product, null);
+        purchaseOrderFinished = new PurchaseOrder(1L, LocalDateTime.now(), OrderStatus.FINISHED, new Buyer());
+        purchaseOrderProductDTO = new PurchaseOrderProductDTO(1L, product.getName(), productPurchaseOrder.getProductPrice(), productPurchaseOrder.getProductQuantity());
     }
 
     @Test
@@ -74,12 +84,19 @@ public class PurchaseOrderServiceTest {
                 .thenReturn(Optional.of(purchaseOrder));
 
 
+        Mockito.when(productPurchaseOrderService.getByPurchaseOrder(ArgumentMatchers.any()))
+                .thenReturn(productPurchaseOrder);
+
+        Mockito.when(batchService.getById(ArgumentMatchers.anyLong()))
+                .thenReturn(Optional.of(batch));
+
         Mockito.when(repo.save(ArgumentMatchers.any()))
                 .thenReturn(ArgumentMatchers.any());
 
         service.updateStatusToFinished(1L);
 
         assertThat(purchaseOrder.getStatus()).isEqualTo(OrderStatus.FINISHED);
+        assertThat(batch.getVolume()).isEqualTo(0);
     }
 
     @Test
@@ -122,10 +139,10 @@ public class PurchaseOrderServiceTest {
                 .thenReturn(Optional.of(batch));
         Mockito.when(repo.save(ArgumentMatchers.any()))
                         .thenReturn(purchaseOrder);
-        Mockito.when(productPurchaseService.create(ArgumentMatchers.any()))
+        Mockito.when(productPurchaseOrderService.create(ArgumentMatchers.any()))
                 .thenReturn(new ProductPurchaseOrder());
-        Mockito.when(productPurchaseService.getAllProductPurchaseOrder(ArgumentMatchers.any()))
-                .thenReturn(productPurchaseOrder);
+        Mockito.when(productPurchaseOrderService.getAllProductPurchaseOrder(ArgumentMatchers.any()))
+                .thenReturn(productPurchaseList);
 
         PurchaseOrderResponse response = service.create(purchaseRequest);
 
@@ -135,4 +152,18 @@ public class PurchaseOrderServiceTest {
 
     }
 
+    @Test
+    void getProductsByPurchaseOrder_giveAnValidPurchaseOrderId_returnAListOfProducts() {
+        Mockito.when(repo.findById(ArgumentMatchers.anyLong()))
+                .thenReturn(Optional.of(purchaseOrder));
+
+        Mockito.when(repo.findProductsByPurchaseOrder(ArgumentMatchers.anyLong()))
+                .thenReturn(List.of(purchaseOrderProductDTO));
+
+        List<PurchaseOrderProductDTO> resultPurchaseOrderProduct = service.getProductsByPurchaseOrder(1L);
+
+        assertThat(resultPurchaseOrderProduct).isNotNull();
+        assertThat(resultPurchaseOrderProduct.get(0).getId()).isPositive();
+        assertThat(resultPurchaseOrderProduct.get(0)).isEqualTo(purchaseOrderProductDTO);
+    }
 }

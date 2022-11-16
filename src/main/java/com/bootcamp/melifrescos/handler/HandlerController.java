@@ -34,12 +34,12 @@ public class HandlerController {
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ExceptionDetails> handlerNotFoundException(NotFoundException ex) {
         ExceptionDetails exceptionDetails = ExceptionDetails.builder()
-                .title("BAD REQUEST")
+                .title("NOT FOUND")
                 .message(ex.getMessage())
                 .timesTemp(LocalDateTime.now())
                 .build();
 
-        return new ResponseEntity<>(exceptionDetails, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(exceptionDetails, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(UnavailableVolumeException.class)
