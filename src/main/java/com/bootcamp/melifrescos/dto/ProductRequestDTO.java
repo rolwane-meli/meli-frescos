@@ -23,6 +23,6 @@ public class ProductRequestDTO {
     @ValueOfEnum(enumClass = Type.class, message = "Tipo não identificado")
     private String type;
 
-    @NotNull(message = "O vendedor é obrigatório.")
+    @NotNull(message = "O ID do vendedor é obrigatório.")
     private Long sellerId;
 }
