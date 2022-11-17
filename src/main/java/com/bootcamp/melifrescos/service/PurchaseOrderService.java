@@ -38,6 +38,7 @@ public class PurchaseOrderService implements IPurchaseOrderService {
      * @param id PurchaseOrder a ser finalizada
      */
     @Override
+    @Transactional
     public void updateStatusToFinished(Long id) {
         // Procura a purchaseOrder a ser finalizada
         PurchaseOrder purchaseOrder = repo.findById(id).orElse(null);
@@ -50,36 +51,46 @@ public class PurchaseOrderService implements IPurchaseOrderService {
             throw new PurchaseAlreadyFinishedException("O carrinho já está finalizado");
         }
 
-        // busca na tabela intermediária 'ProductPurchaseOrder' um registro com a referida purchaseOrder
-        ProductPurchaseOrder productPurchaseOrder = productPurchaseOrderService.getByPurchaseOrder(purchaseOrder);
+        // busca na tabela intermediária 'ProductPurchaseOrder' todos os registros com a referida purchaseOrder
+        List<ProductPurchaseOrder> productPurchaseOrders = productPurchaseOrderService.getAllByPurchaseOrder(purchaseOrder);
 
-        // busca o lote que está no registro de 'ProductPurchaseOrder'
-        Batch batch = batchService.getById(productPurchaseOrder.getBatchId()).orElse(null);
+        this.updateBatches(productPurchaseOrders);
 
         // muda o status da ordem de compra para FINISHED
         purchaseOrder.setStatus(OrderStatus.FINISHED);
 
-        // atualiza a quantidade de produtos disponíveis no lote
-        batch.setProductQuantity(batch.getProductQuantity() - productPurchaseOrder.getProductQuantity());
-
-        // se o estoque estiver esgotado então zera o volume ocupado pelo lote
-        if (batch.getProductQuantity() == 0) {
-            batch.setVolume(0);
-        }
-
-        // monta o batchDTO para fazer a inserção no banco
-        BatchDTO batchDTO = this.mountBatchDTO(batch);
-
-        batchService.create(batchDTO);
         repo.save(purchaseOrder);
+    }
+
+    /**
+     * Método responsável por atualizar o estoque dos lotes, caso estoque vazio o volume é zerado.
+     * @param productPurchaseOrders
+     */
+    private void updateBatches(List<ProductPurchaseOrder> productPurchaseOrders) {
+        productPurchaseOrders.forEach((productPurchaseOrder) -> {
+            // busca o lote que está no registro de 'ProductPurchaseOrder'
+            Batch batch = batchService.getById(productPurchaseOrder.getBatchId()).orElse(null);
+
+            // atualiza a quantidade de produtos dispiníveis no lote
+            batch.setProductQuantity(batch.getProductQuantity() - productPurchaseOrder.getProductQuantity());
+
+            // se o estoque estiver esgotado então zera o volume ocupado pelo lote
+            if (batch.getProductQuantity() == 0) {
+                batch.setVolume(0);
+            }
+
+            // monta o batchDTO para fazer a inserção no banco
+            BatchDTO batchDTO = this.mountBatchDTO(batch);
+
+            batchService.create(batchDTO);
+        });
     }
 
 
     /**
-     * It takes a Batch object and returns a BatchDTO object
-     *
-     * @param batch the batch object that we want to convert to a DTO
-     * @return A BatchDTO object.
+     * Método responsável por converter um Batch em um batchDTO
+     * @param batch
+     * @return batchDTO
      */
     private BatchDTO mountBatchDTO(Batch batch) {
         return new BatchDTO(
@@ -94,6 +105,7 @@ public class PurchaseOrderService implements IPurchaseOrderService {
             batch.getPrice()
         );
     }
+
 
 
     /**
@@ -137,8 +149,10 @@ public class PurchaseOrderService implements IPurchaseOrderService {
 
         productPurchaseOrderService.create(new ProductPurchaseOrder(purchaseOrder1,
                 purchaseOrder.getProductDTO().getPrice(), purchaseOrder.getProductDTO().getQuantity(), batch.get().getProduct(), purchaseOrder.getBatchId()));
-        List<ProductPurchaseOrder> productPurchaseOrder = productPurchaseOrderService.getAllProductPurchaseOrder(purchaseOrder1);
+
+        List<ProductPurchaseOrder> productPurchaseOrder = productPurchaseOrderService.getAllByPurchaseOrder(purchaseOrder1);
         BigDecimal finalPrice = calcTotalPrice(productPurchaseOrder);
+
 
         return new PurchaseOrderResponse(purchaseOrder1.getStatus(), finalPrice, productPurchaseOrder);
     }
@@ -160,5 +174,4 @@ public class PurchaseOrderService implements IPurchaseOrderService {
     public Optional<PurchaseOrder> getById(Long id) {
         return repo.findById(id);
     }
-
 }

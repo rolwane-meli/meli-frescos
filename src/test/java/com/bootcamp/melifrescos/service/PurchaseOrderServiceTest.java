@@ -26,6 +26,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,53 +42,58 @@ public class PurchaseOrderServiceTest {
     private PurchaseOrderService service;
 
     @Mock
+    private IPurchaseOrderRepo repo;
+
+    @Mock
     private ProductPurchaseOrderService productPurchaseOrderService;
 
     @Mock
     private BatchService batchService;
 
     @Mock
-    private IPurchaseOrderRepo repo;
-
-    @Mock
     private BuyerService buyerService;
 
     private PurchaseOrder purchaseOrder, purchaseOrderFinished;
+
     private Batch batch;
+
     private PurchaseOrderRequest purchaseRequest;
+
     private PurchaseOrderResponse purchaseResponse;
-    private List<ProductPurchaseOrder> productPurchaseList = new ArrayList<>();
+
+    private List<ProductPurchaseOrder> productPurchaseOrders = new ArrayList<>(), productPurchaseList = new ArrayList<>();
+
     private Product product;
 
     private ProductPurchaseOrder productPurchaseOrder;
-    private PurchaseOrderProductDTO purchaseOrderProductDTO;
 
+    private PurchaseOrderProductDTO purchaseOrderProductDTO;
 
     @BeforeEach
     public void setup() {
         purchaseOrder = new PurchaseOrder(1L, LocalDateTime.now(), OrderStatus.OPEN, new Buyer());
-        purchaseOrderFinished = new PurchaseOrder(1L, LocalDateTime.now(), OrderStatus.FINISHED, new Buyer());
-        batch = new Batch(1L, 12, 12, LocalDate.now(), LocalTime.now(), 1,
-                LocalDateTime.now(), new BigDecimal("0"), new Product(), new InboundOrder());
+        productPurchaseOrder = new ProductPurchaseOrder(1L, new BigDecimal("5.50"), 20, 1L, purchaseOrder, product);
+        batch = new Batch(1L, 10, 20, LocalDate.now(), LocalTime.now(), 75, LocalDateTime.now(), new BigDecimal("5.50"), new Product(), null);
+
         purchaseRequest = new PurchaseOrderRequest(1L, 1L, 1L, new PurchaseProductDTO(1L, 1, new BigDecimal("0")));
         purchaseResponse = new PurchaseOrderResponse(OrderStatus.OPEN, new BigDecimal("0"), productPurchaseList);
         productPurchaseList.add(new ProductPurchaseOrder(1L, new BigDecimal("0"), 1, 1L, purchaseOrder, batch.getProduct()));
         product = new Product(1L, "Leite", Type.REFRIGERATED, null, null, null);
-        purchaseOrder = new PurchaseOrder(1L, LocalDateTime.now(), OrderStatus.OPEN, new Buyer());
-        productPurchaseOrder = new ProductPurchaseOrder(1L, new BigDecimal("5.50"), 20, 1L, purchaseOrder, null);
-        batch = new Batch(1L, 10, 20, LocalDate.now(), LocalTime.now(), 75, LocalDateTime.now(), new BigDecimal("5.50"), product, null);
+
         purchaseOrderFinished = new PurchaseOrder(1L, LocalDateTime.now(), OrderStatus.FINISHED, new Buyer());
+
+        productPurchaseOrders.add(productPurchaseOrder);
         purchaseOrderProductDTO = new PurchaseOrderProductDTO(1L, product.getName(), productPurchaseOrder.getProductPrice(), productPurchaseOrder.getProductQuantity());
     }
 
     @Test
     public void updateStatusToFinished_givenAnExistingId_updateStatus() {
+
         Mockito.when(repo.findById(ArgumentMatchers.anyLong()))
                 .thenReturn(Optional.of(purchaseOrder));
 
-
-        Mockito.when(productPurchaseOrderService.getByPurchaseOrder(ArgumentMatchers.any()))
-                .thenReturn(productPurchaseOrder);
+        Mockito.when(productPurchaseOrderService.getAllByPurchaseOrder(ArgumentMatchers.any()))
+                .thenReturn(productPurchaseOrders);
 
         Mockito.when(batchService.getById(ArgumentMatchers.anyLong()))
                 .thenReturn(Optional.of(batch));
@@ -141,7 +149,7 @@ public class PurchaseOrderServiceTest {
                         .thenReturn(purchaseOrder);
         Mockito.when(productPurchaseOrderService.create(ArgumentMatchers.any()))
                 .thenReturn(new ProductPurchaseOrder());
-        Mockito.when(productPurchaseOrderService.getAllProductPurchaseOrder(ArgumentMatchers.any()))
+        Mockito.when(productPurchaseOrderService.getAllByPurchaseOrder(ArgumentMatchers.any()))
                 .thenReturn(productPurchaseList);
 
         PurchaseOrderResponse response = service.create(purchaseRequest);
