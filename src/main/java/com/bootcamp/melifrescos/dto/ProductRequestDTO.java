@@ -18,7 +18,6 @@ public class ProductRequestDTO {
     @NotBlank(message = "O nome é obrigatório.")
     private String name;
 
-
     @NotNull(message = "O tipo é obrigatório")
     @ValueOfEnum(enumClass = Type.class, message = "Tipo não identificado")
     private String type;

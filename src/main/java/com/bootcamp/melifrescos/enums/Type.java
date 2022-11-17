@@ -15,7 +15,7 @@ public enum Type {
     private String sigla;
 
     public static Type fromValue(String type) {
-        return Type.valueOf(type.toUpperCase());
+        return Type.valueOf(type);
     }
 
     public static Type fromSigla(String sigla) {

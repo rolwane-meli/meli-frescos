@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 public class BatchListDTO {
     private Long batchNumber;
     private int currentQuantity;
-    private LocalDateTime dueDate;
+    private LocalDate dueDate;
     private BigDecimal price;
 
     private Long sector;

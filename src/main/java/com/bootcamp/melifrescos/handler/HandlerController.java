@@ -24,7 +24,7 @@ public class HandlerController {
 
         ExceptionDetails exceptionDetails = ExceptionDetails.builder()
                 .title("BAD REQUEST")
-                .message(ex.getMessage())
+                .message("Argumentos inválidos.")
                 .timesTemp(LocalDateTime.now())
                 .errors(errors)
                 .build();
