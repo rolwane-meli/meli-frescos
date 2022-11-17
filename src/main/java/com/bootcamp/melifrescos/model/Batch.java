@@ -35,39 +35,27 @@ public class Batch {
     private double currentTemperature;
 
     @Column(length = 11, nullable = false)
-    @NotNull(message = "Quantidade é obrigatório.")
     private int productQuantity;
 
     @Column(nullable = false)
-    @NotNull(message = "Data de Fabricação é obrigatório.")
-    @JsonDeserialize(using = LocalDateDeserializer.class)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate manufacturingDate;
 
     @Column(nullable = false)
-    @JsonFormat(pattern="HH:mm:ss")
-    @NotNull(message = "Tempo de Fabricação é obrigatório.")
     private LocalTime manufacturingTime;
 
     @Column(nullable = false)
-    @NotNull(message = "O volume é obrigatório.")
     private double volume;
 
     @Column(nullable = false)
-    @NotNull(message = "O vencimento é obrigatório.")
-    private LocalDateTime dueDate;
-
+    private LocalDate dueDate;
 
     @Column(nullable = false)
-    @NotNull(message = "O preço é obrigatório.")
-    @DecimalMin(value = "0.1", message = "O preco precisa ser maior que 0.")
     private BigDecimal price;
 
     @ManyToOne
     @Valid
     @JoinColumn(name = "idProduct")
     @JsonIgnoreProperties("batches")
-    @NotNull(message = "O produto é obrigatório.")
     private Product product;
 
     @ManyToOne

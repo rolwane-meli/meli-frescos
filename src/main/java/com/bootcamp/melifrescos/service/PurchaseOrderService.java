@@ -140,6 +140,7 @@ public class PurchaseOrderService implements IPurchaseOrderService {
     public PurchaseOrderResponse create(PurchaseOrderRequest purchaseOrder) {
         Optional<Buyer> buyer = buyerService.getById(purchaseOrder.getBuyerId());
         Optional<Batch> batch = batchService.getById(purchaseOrder.getBatchId());
+        if(batch.isEmpty()) { throw new NotFoundException("Lote não encontrado.");}
         if (batch.get().getProductQuantity() < purchaseOrder.getProductDTO().getQuantity()) {
             throw new NoQuantityBatchProduct("O estoque não possui a quantidade de produto desejado.");
         }

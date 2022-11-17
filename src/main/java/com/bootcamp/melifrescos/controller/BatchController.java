@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -20,7 +21,7 @@ public class BatchController {
     private IBatchService service;
 
     @PostMapping
-    public ResponseEntity<BatchDTO> create(@RequestBody BatchDTO batchDTO){
+    public ResponseEntity<BatchDTO> create(@RequestBody @Valid BatchDTO batchDTO){
         Batch result = service.create(batchDTO);
         BatchDTO resultDto = new BatchDTO();
         BeanUtils.copyProperties(result, resultDto);

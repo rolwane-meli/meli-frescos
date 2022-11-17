@@ -23,13 +23,11 @@ public class Warehouse {
     private Long id;
 
     @Column(length = 45, nullable = false)
-    @NotBlank(message = "O nome é obrigatório.")
     private String name;
 
     @OneToOne
     @JoinColumn(name = "idRepresentative")
     @JsonIgnoreProperties("warehouse")
-    @NotNull(message = "O representante é obrigatório.")
     private Representative representative;
 
     @OneToMany(mappedBy = "warehouse")

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -24,6 +25,7 @@ public class PurchaseOrderRequest {
     @NotNull(message = "ID do vendedor é obrigatório.")
     private Long batchId;
 
+    @Valid
     @NotNull(message = "Adicione produto no carrinho.")
     private PurchaseProductDTO productDTO;
 }
