@@ -49,9 +49,7 @@ public class ProductService implements IProductService {
      */
     @Override
     public Optional<Product> getById(Long id) {
-        Optional<Product> product = repo.findById(id);
-        if(product.isEmpty()) { throw new NotFoundException("Produto não encontrado."); }
-        return product;
+        return repo.findById(id);
     }
 
     /**
