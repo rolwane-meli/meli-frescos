@@ -45,10 +45,10 @@ public class BatchServiceTest {
     @BeforeEach
     void setup() {
         product = new Product(1L, "Leite", Type.REFRIGERATED, new Seller(), null, null);
-        batchDTO = new BatchDTO(null, 1L, -13.00, 5, LocalDate.now(), LocalTime.now(), 30.00, LocalDateTime.from(LocalDateTime.now().plusDays(60)), new BigDecimal(7));
-        batchDTO1 = new BatchDTO(null, 1L, -13.00, 5, LocalDate.now(), LocalTime.now(), 30.00, LocalDateTime.from(LocalDateTime.now().plusDays(30)), new BigDecimal(7));
-        batch = new Batch(1L, 8.00, 5, LocalDate.now(), LocalTime.now(), 30.00, LocalDateTime.now(), new BigDecimal(7), product, null);
-        inboundOrder = new InboundOrder(1L,LocalDateTime.now(),new Sector(),null);
+        batchDTO = new BatchDTO(null, 1L, -13.00, 5, LocalDate.now(), LocalTime.now(), 30.00, LocalDate.from(LocalDateTime.now().plusDays(60)), new BigDecimal(7));
+        batchDTO1 = new BatchDTO(null, 1L, -13.00, 5, LocalDate.now(), LocalTime.now(), 30.00, LocalDate.from(LocalDateTime.now().plusDays(30)), new BigDecimal(7));
+        batch = new Batch(1L, 8.00, 5, LocalDate.now(), LocalTime.now(), 30.00, LocalDate.now(), new BigDecimal(7), product, null);
+        inboundOrder = new InboundOrder(1L,LocalDate.now(),new Sector(),null);
         batchList.add(batch);
         batchDTOlist.add(batchDTO);
         batchDTOlist.add(batchDTO1);
