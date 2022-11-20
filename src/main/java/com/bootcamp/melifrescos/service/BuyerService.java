@@ -15,6 +15,11 @@ import java.util.Optional;
 public class BuyerService implements IBuyerService {
     private final IBuyerRepo repo;
 
+    /**
+     * Método responsável por buscar Buyer por ID
+     * @param id
+     * @return Buyer
+     */
     @Override
     public Optional<Buyer> getById(Long id){
         Optional<Buyer> buyer = repo.findById(id);
