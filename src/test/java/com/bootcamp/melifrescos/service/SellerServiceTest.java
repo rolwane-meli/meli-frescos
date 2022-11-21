@@ -1,6 +1,5 @@
 package com.bootcamp.melifrescos.service;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import com.bootcamp.melifrescos.model.Seller;
 import com.bootcamp.melifrescos.repository.ISellerRepo;
@@ -16,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-public class SerllerServiceTest {
+public class SellerServiceTest {
 
     @InjectMocks
     private SellerService sellerService;
