@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,7 +35,7 @@ public class HandlerController {
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ExceptionDetails> handlerNotFoundException(NotFoundException ex) {
         ExceptionDetails exceptionDetails = ExceptionDetails.builder()
-                .title("NOT FOUND")
+                .title("BAD REQUEST")
                 .message(ex.getMessage())
                 .timesTemp(LocalDateTime.now())
                 .build();
@@ -90,6 +91,18 @@ public class HandlerController {
 
     @ExceptionHandler(NoQuantityBatchProduct.class)
     public ResponseEntity<ExceptionDetails> handlerPurchaseAlreadyFinishedException(NoQuantityBatchProduct ex) {
+
+        ExceptionDetails exceptionDetails = ExceptionDetails.builder()
+                .title("BAD REQUEST")
+                .message(ex.getMessage())
+                .timesTemp(LocalDateTime.now())
+                .build();
+
+        return new ResponseEntity<>(exceptionDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidCepException.class)
+    public ResponseEntity<ExceptionDetails> handlerInvalidCepException(InvalidCepException ex) {
 
         ExceptionDetails exceptionDetails = ExceptionDetails.builder()
                 .title("BAD REQUEST")
