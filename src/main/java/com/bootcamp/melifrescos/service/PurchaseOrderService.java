@@ -171,6 +171,11 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         return finalPrice;
     }
 
+    /**
+     * Método reponsável por buscar PurchaseOrder
+     * @param id via requisicao
+     * @return Optinal de Purchase Order
+     */
     public Optional<PurchaseOrder> getById(Long id) {
         return repo.findById(id);
     }

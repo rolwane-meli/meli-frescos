@@ -56,9 +56,9 @@ public class InboundOrderServiceTest {
 
     @BeforeEach
     public void setup() {
-        batch01 = new BatchDTO(null, 1L, -13.00, 5, LocalDate.now(), LocalTime.now(), 30, LocalDateTime.now(), new BigDecimal(7));
-        batch02 = new BatchDTO(null, 2L, -18.00, 25, LocalDate.now(), LocalTime.now(), 45, LocalDateTime.now(), new BigDecimal(9));
-        batch03 = new BatchDTO(null, 3L, 10.00, 155, LocalDate.now(), LocalTime.now(), 20, LocalDateTime.now(), new BigDecimal(10));
+        batch01 = new BatchDTO(null, 1L, -13.00, 5, LocalDate.now(), LocalTime.now(), 30, LocalDate.now(), new BigDecimal(7));
+        batch02 = new BatchDTO(null, 2L, -18.00, 25, LocalDate.now(), LocalTime.now(), 45, LocalDate.now(), new BigDecimal(9));
+        batch03 = new BatchDTO(null, 3L, 10.00, 155, LocalDate.now(), LocalTime.now(), 20, LocalDate.now(), new BigDecimal(10));
 
         // Lista de Batches do mesmo tipo
         batchList.add(batch01);
@@ -68,8 +68,8 @@ public class InboundOrderServiceTest {
         invalidBacthList.add(batch01);
         invalidBacthList.add(batch03);
 
-        inboundOrderDTO = new InboundOrderDTO(1L, LocalDateTime.now(), batchList);
-        invalidInboundOrderDTO = new InboundOrderDTO(1L, LocalDateTime.now(), invalidBacthList);
+        inboundOrderDTO = new InboundOrderDTO(1L, LocalDate.now(), batchList);
+        invalidInboundOrderDTO = new InboundOrderDTO(1L, LocalDate.now(), invalidBacthList);
 
         sector = new Sector(1L, "meli-ce1", 100, Type.FROZEN, new Warehouse(), null);
         inboundOrder = new InboundOrder(1L, inboundOrderDTO.getOrderDate(), sector,null);
