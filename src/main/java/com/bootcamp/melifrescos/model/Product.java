@@ -40,4 +40,10 @@ public class Product {
     @OneToMany(mappedBy = "product")
     @JsonIgnoreProperties("product")
     private List<ProductPurchaseOrder> productPurchaseOrders;
+
+    public Product(Long id, String name, Type type) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+    }
 }
