@@ -29,6 +29,13 @@ public class ShippingService implements IShippingService {
 
     private final RestTemplate restTemplate;
 
+    /**
+     * Método responsável por calcular o valor do frete dado um cep, um produto e uma quantidade
+     * @param cep
+     * @param productId
+     * @param quantity
+     * @return shippingResponseDTO Object
+     */
     @Override
     public ShippingResponseDTO getShippingPrice(String cep, Long productId, int quantity) {
         Optional<Product> product = productService.getById(productId);
@@ -53,6 +60,11 @@ public class ShippingService implements IShippingService {
         return shippingResponseDTO;
     }
 
+    /**
+     * Método responsável por buscar informações sobre uma localidade dado um cep
+     * @param cep
+     * @return CepDTO Object
+     */
     private CepDTO fetchCepDTO(String cep) {
         try {
             CepDTO cepDTO = restTemplate.getForEntity("https://viacep.com.br/ws/"+cep+"/json/", CepDTO.class).getBody();
