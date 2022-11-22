@@ -1,11 +1,6 @@
 package com.bootcamp.melifrescos.service;
 
-import com.bootcamp.melifrescos.dto.BatchListDTO;
-import com.bootcamp.melifrescos.dto.ProductWithBatchesDTO;
-import com.bootcamp.melifrescos.dto.ProductListDTO;
-import com.bootcamp.melifrescos.dto.ProductRequestDTO;
-import com.bootcamp.melifrescos.dto.ProductResponseDTO;
-import com.bootcamp.melifrescos.dto.PurchaseOrderResponse;
+import com.bootcamp.melifrescos.dto.*;
 import com.bootcamp.melifrescos.enums.Type;
 import com.bootcamp.melifrescos.exceptions.NotFoundException;
 import com.bootcamp.melifrescos.interfaces.IProductService;
@@ -14,10 +9,11 @@ import com.bootcamp.melifrescos.model.Seller;
 import com.bootcamp.melifrescos.repository.IProductRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +22,8 @@ public class ProductService implements IProductService {
 
     private final IProductRepo repo;
     private final SellerService sellerService;
+    private final RestTemplate restTemplate;
+
 
     /**
      * Método responsável por criar um produto
@@ -53,7 +51,7 @@ public class ProductService implements IProductService {
     }
 
     /**
-     * Método responsável por buscar todos os produtos que estão alocados em algum lote/armazém
+     * Método responsável por buscar todos os produtos alocados em algum lote/armazém
      * @return returna uma lista de produtos, com seu preço e Id do lote
      */
     @Override
@@ -111,6 +109,88 @@ public class ProductService implements IProductService {
         }
 
         return productWithBatchesDTO;
+    }
+
+    /**
+     * Método responsável por listar todos os produtos com o preço convertido conforme a moeda desejada
+     * @param currency Moeda a converter
+     * @return Lista de produtos com preço convertido
+     */
+    @Override
+    public List<ProductConvertedDTO> getAllProductsWithConvertedPrice(String currency) {
+        var price = BigDecimal.valueOf(requestCurrencyApi(currency).getRate());
+
+        List<ProductListDTO> products = repo.findProductsByBatches();
+
+        return this.convertProductListDtoToProductConvertedDTO(products,currency,price);
+    }
+
+    /**
+     * Método responsável por buscar um determinado produto por ‘id’ e converter o preço conforme a moeda desejada
+     * @param id id do produto
+     * @param currency Moeda a converter
+     * @return lista com o produto
+     */
+    public List<ProductConvertedDTO> getByProductIdWithConvertedPrice(Long id, String currency){
+        var price = BigDecimal.valueOf(requestCurrencyApi(currency).getRate());
+
+        List<ProductListDTO> products = repo.findProductsByBatches();
+
+        List<ProductConvertedDTO> productConvertedDTO = this.convertProductListDtoToProductConvertedDTO(products, currency, price);
+
+        List<ProductConvertedDTO> filteredProducts = filterProductConvertedDtoById(productConvertedDTO,id);
+
+        if (filteredProducts.isEmpty()){
+            throw new NotFoundException("Produto nao existe");
+        }
+
+        return filteredProducts;
+    }
+
+    /**
+     * Método responsável por converter ProductListDto em ProductListBatchDto
+     * @param products lista de ProductListDTO
+     * @param currency moeda
+     * @param price preço da moeda
+     * @return Lista de ProductConvertedDTO
+     */
+    private List<ProductConvertedDTO> convertProductListDtoToProductConvertedDTO(List<ProductListDTO> products, String currency, BigDecimal price){
+        List<ProductConvertedDTO> productConvertedDtoList = new ArrayList<>();
+
+        products.forEach(el -> {
+            productConvertedDtoList.add(new ProductConvertedDTO(el,currency,price));
+        });
+
+        return productConvertedDtoList;
+    }
+
+    /**
+     * Método responsável por filtrar um produto conforme o ‘id’
+     * @param productConvertedDTO lista de productConvertedDTO
+     * @param id id do produto
+     * @return lista de productConvertedDTO com o produto filtrado
+     */
+    private List<ProductConvertedDTO> filterProductConvertedDtoById(List<ProductConvertedDTO> productConvertedDTO, Long id) {
+        return productConvertedDTO.stream()
+                .filter(el -> el.getId().equals(id))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Método responsável por requisitar api de conversão de moedas
+     * @param currency moeda a buscar
+     * @return CurrencyDTO
+     */
+    private CurrencyDTO requestCurrencyApi(String currency) {
+        CurrencyDTO response;
+
+        try{
+            response = this.restTemplate.getForEntity("https://api.mercadolibre.com/currency_conversions/search?from=BRL&to=" + currency, CurrencyDTO.class).getBody();
+        } catch (HttpClientErrorException.BadRequest ex){
+            throw new NotFoundException("Essa moeda ainda nao existe");
+        };
+
+        return response;
     }
 
     /**
