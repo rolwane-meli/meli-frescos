@@ -73,7 +73,7 @@ public class PurchaseOrderServiceTest {
     public void setup() {
         purchaseOrder = new PurchaseOrder(1L, LocalDateTime.now(), OrderStatus.OPEN, new Buyer());
         productPurchaseOrder = new ProductPurchaseOrder(1L, new BigDecimal("5.50"), 20, 1L, purchaseOrder, product);
-        batch = new Batch(1L, 10, 20, LocalDate.now(), LocalTime.now(), 75, LocalDateTime.now(), new BigDecimal("5.50"), new Product(), null);
+        batch = new Batch(1L, 10, 20, LocalDate.now(), LocalTime.now(), 75, LocalDate.now(), new BigDecimal("5.50"), new Product(), null);
 
         purchaseRequest = new PurchaseOrderRequest(1L, 1L, 1L, new PurchaseProductDTO(1L, 1, new BigDecimal("0")));
         purchaseResponse = new PurchaseOrderResponse(OrderStatus.OPEN, new BigDecimal("0"), productPurchaseList);
