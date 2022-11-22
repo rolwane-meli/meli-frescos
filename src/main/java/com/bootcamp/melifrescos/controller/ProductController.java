@@ -3,7 +3,6 @@ package com.bootcamp.melifrescos.controller;
 import com.bootcamp.melifrescos.dto.*;
 import com.bootcamp.melifrescos.enums.Type;
 import com.bootcamp.melifrescos.interfaces.IProductService;
-import com.bootcamp.melifrescos.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,12 +55,12 @@ public class ProductController {
     }
 
     @GetMapping("/international-market")
-    public ResponseEntity<List<ProductListBatchDTO>> getAllProductsWithConvertedPrice(@RequestParam String currency){
+    public ResponseEntity<List<ProductConvertedDTO>> getAllProductsWithConvertedPrice(@RequestParam String currency){
         return new ResponseEntity<>(service.getAllProductsWithConvertedPrice(currency),HttpStatus.OK);
     }
 
     @GetMapping(value="/international-market/{id}",params = {"currency"})
-    public ResponseEntity<List<ProductListBatchDTO>> getAllProductsWithConvertedPrice(@PathVariable Long id,@RequestParam String currency){
+    public ResponseEntity<List<ProductConvertedDTO>> getAllProductsWithConvertedPrice(@PathVariable Long id, @RequestParam String currency){
         return new ResponseEntity<>(service.getByProductIdWithConvertedPrice(id,currency),HttpStatus.OK);
     }
 }
