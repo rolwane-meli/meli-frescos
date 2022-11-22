@@ -34,6 +34,14 @@ O objetivo deste projeto final é implementar uma API REST os conteúdos trabalh
 *<em>Categorias: FS = Fresco; RF = Refrigerado; FF = Congelado</em>
 
 <br />
+
+## DIAGRAMA DE ENTIDADE E RELACIONAMENTO
+
+<img width="984" alt="Captura de Tela 2022-11-22 às 18 38 49" src="https://user-images.githubusercontent.com/115089066/203426608-2266ba94-391d-4f4f-b44e-dede639c3c94.png">
+
+
+<br />
+
 ## End-Points ➡️
 
 ***URL BASE:*** ```/api/v1/fresh-products```
