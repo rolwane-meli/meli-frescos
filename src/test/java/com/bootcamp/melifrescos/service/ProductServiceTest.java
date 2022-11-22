@@ -1,8 +1,6 @@
 package com.bootcamp.melifrescos.service;
 
-import com.bootcamp.melifrescos.dto.ProductListDTO;
-import com.bootcamp.melifrescos.dto.ProductRequestDTO;
-import com.bootcamp.melifrescos.dto.ProductWithBatchesDTO;
+import com.bootcamp.melifrescos.dto.*;
 import com.bootcamp.melifrescos.enums.Type;
 import com.bootcamp.melifrescos.exceptions.NotFoundException;
 import com.bootcamp.melifrescos.model.*;
@@ -12,10 +10,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,9 @@ public class ProductServiceTest {
     @Mock
     private IProductRepo repo;
 
+    @Mock
+    private RestTemplate restTemplate;
+
     private Product product;
 
     private ProductRequestDTO productRequestDTO;
@@ -44,6 +49,8 @@ public class ProductServiceTest {
     private Seller seller;
     private List<ProductListDTO> productsList = new ArrayList<>();
     private ProductListDTO productListDTO;
+
+    private ProductListDTO productListDTO1;
 
     private ProductWithBatchesDTO productWithBatchesDTO;
 
@@ -58,16 +65,20 @@ public class ProductServiceTest {
 
     private Warehouse warehouse;
 
+    private ProductConvertedDTO productConvertedDTOteste;
 
+    private List<ProductConvertedDTO> productConvertedDTO = new ArrayList<>();
+
+    private CurrencyDTO currencyDTO;
 
 
     @BeforeEach
     void setup() {
         warehouse = new Warehouse(1L, "wherehouse", null, null);
         sector = new Sector(1L, "meli-ce1", 100, Type.FROZEN, warehouse, null);
-        inboundOrder = new InboundOrder(1L, LocalDateTime.now(), sector,null);
-        batch = new Batch(1L, 8.00, 5, LocalDate.now(), LocalTime.now(), 30.00, LocalDateTime.now(), new BigDecimal(7), product, inboundOrder);
-        batch1 = new Batch(2L, 6.00, 2, LocalDate.now(), LocalTime.now(), 1.00, LocalDateTime.of(2022,10,5,9,39,53), new BigDecimal(7), product, inboundOrder);
+        inboundOrder = new InboundOrder(1L, LocalDate.now(), sector,null);
+        batch = new Batch(1L, 8.00, 5, LocalDate.now(), LocalTime.now(), 30.00, LocalDate.now(), new BigDecimal(7), product, inboundOrder);
+        batch1 = new Batch(2L, 6.00, 2, LocalDate.now(), LocalTime.now(), 1.00, LocalDate.of(2022,10,5), new BigDecimal(7), product, inboundOrder);
         batchList.add(batch);
         batchList.add(batch1);
 
@@ -76,8 +87,14 @@ public class ProductServiceTest {
         productRequestDTO = new ProductRequestDTO("leite",Type.REFRIGERATED.name(),1L);
         productRequestDTOFail = new ProductRequestDTO("leite",Type.REFRIGERATED.name(),2L);
         productListDTO = new ProductListDTO(1L, "CHOCOLATE", Type.FROZEN, new BigDecimal(5), 5, 2L);
+        productListDTO1 = new ProductListDTO(2L, "LEITE", Type.FROZEN, new BigDecimal(10), 10, 3L);
         productsList.add(productListDTO);
+        productsList.add(productListDTO1);
         productWithBatchesDTO = new ProductWithBatchesDTO(product);
+
+        currencyDTO = new CurrencyDTO("BRL","EUR",5.5);
+        productConvertedDTOteste = new ProductConvertedDTO(productListDTO,"EUR",new BigDecimal("5.5"));
+        productConvertedDTO.add(productConvertedDTOteste);
     }
 
     @Test
@@ -193,5 +210,50 @@ public class ProductServiceTest {
         Mockito.when(repo.findById(ArgumentMatchers.anyLong())).thenReturn(Optional.of(product));
 
         assertThrows(NotFoundException.class,()-> service.getByIdWithSortedBatches(1L,"w"));
+    }
+
+    @Test
+    void getAllProductsWithConvertedPrice_returnAllProductsWithConvertedPrice_whenCaseOfSuccess(){
+        Mockito.when(repo.findProductsByBatches()).thenReturn(productsList);
+
+        Mockito.when(restTemplate.getForEntity(ArgumentMatchers.anyString(),ArgumentMatchers.any())).thenReturn(new ResponseEntity<>(currencyDTO, HttpStatus.OK));
+
+        List<ProductConvertedDTO> resultProductConvertedDTO = service.getAllProductsWithConvertedPrice(currencyDTO.getCurrencyQuote());
+
+        assertThat(resultProductConvertedDTO.size()).isEqualTo(productsList.size());
+        assertThat(resultProductConvertedDTO.get(0).getPrice()).isEqualTo(productsList.get(0).getPrice().multiply(new BigDecimal(currencyDTO.getRate()).setScale(new MathContext(2).getPrecision())));
+    }
+
+    @Test
+    void getByProductIdWithConvertedPrice_returnProductByIdWithConvertedPrice_whenCaseOfSuccess(){
+        Mockito.when(repo.findProductsByBatches()).thenReturn(productsList);
+
+        Mockito.when(restTemplate.getForEntity(ArgumentMatchers.anyString(),ArgumentMatchers.any())).thenReturn(new ResponseEntity<>(currencyDTO, HttpStatus.OK));
+
+        List<ProductConvertedDTO> resultProductConvertedDTO = service.getByProductIdWithConvertedPrice(productsList.get(0).getId(),currencyDTO.getCurrencyQuote());
+
+        assertThat(resultProductConvertedDTO.size()).isEqualTo(1);
+        assertThat(resultProductConvertedDTO.get(0).getPrice()).isEqualTo(productsList.get(0).getPrice().multiply(new BigDecimal(currencyDTO.getRate()).setScale(new MathContext(2).getPrecision())));
+    }
+
+    @Test
+    void getByProductIdWithConvertedPrice_throwHttpClientErrorExceptionBadRequest_whenInvalidCurrency(){
+
+        Mockito.when(restTemplate.getForEntity(ArgumentMatchers.anyString(),ArgumentMatchers.any())).thenThrow(HttpClientErrorException.BadRequest.class);
+
+        assertThrows(NotFoundException.class,()->{
+            service.getByProductIdWithConvertedPrice(productsList.get(0).getId(),currencyDTO.getCurrencyQuote());
+        });
+    }
+
+    @Test
+    void getByProductIdWithConvertedPrice_throwNotFoundException_whenProductNotExist(){
+        Mockito.when(repo.findProductsByBatches()).thenReturn(new ArrayList<>());
+
+        Mockito.when(restTemplate.getForEntity(ArgumentMatchers.anyString(),ArgumentMatchers.any())).thenReturn(new ResponseEntity<>(currencyDTO, HttpStatus.OK));
+
+        assertThrows(NotFoundException.class,()->{
+            service.getByProductIdWithConvertedPrice(100L,currencyDTO.getCurrencyQuote());
+        });
     }
 }
