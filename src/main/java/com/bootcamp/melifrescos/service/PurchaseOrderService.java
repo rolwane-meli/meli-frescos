@@ -1,30 +1,27 @@
 package com.bootcamp.melifrescos.service;
 
-import com.bootcamp.melifrescos.dto.PurchaseOrderRequest;
-import com.bootcamp.melifrescos.dto.PurchaseOrderResponse;
-import com.bootcamp.melifrescos.dto.PurchaseProductDTO;
-import com.bootcamp.melifrescos.exceptions.NoQuantityBatchProduct;
-import com.bootcamp.melifrescos.interfaces.*;
 import com.bootcamp.melifrescos.dto.BatchDTO;
 import com.bootcamp.melifrescos.dto.PurchaseOrderProductDTO;
+import com.bootcamp.melifrescos.dto.PurchaseOrderRequest;
+import com.bootcamp.melifrescos.dto.PurchaseOrderResponse;
 import com.bootcamp.melifrescos.enums.OrderStatus;
+import com.bootcamp.melifrescos.exceptions.NoQuantityBatchProduct;
 import com.bootcamp.melifrescos.exceptions.NotFoundException;
 import com.bootcamp.melifrescos.exceptions.PurchaseAlreadyFinishedException;
+import com.bootcamp.melifrescos.interfaces.*;
 import com.bootcamp.melifrescos.model.Batch;
 import com.bootcamp.melifrescos.model.Buyer;
 import com.bootcamp.melifrescos.model.ProductPurchaseOrder;
 import com.bootcamp.melifrescos.model.PurchaseOrder;
 import com.bootcamp.melifrescos.repository.IPurchaseOrderRepo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -67,7 +64,6 @@ public class PurchaseOrderService implements IPurchaseOrderService {
 
         this.sendEmail(purchaseOrder);
     }
-
     /**
      * Método responsável por atualizar o estoque dos lotes, caso estoque vazio o volume é zerado.
      * @param productPurchaseOrders
@@ -112,9 +108,6 @@ public class PurchaseOrderService implements IPurchaseOrderService {
             batch.getPrice()
         );
     }
-
-
-
     /**
      * "If the purchase order exists and is not finished, return the products in it."
      * The first thing we do is check if the purchase order exists. If it doesn't, we throw a NotFoundException
@@ -136,7 +129,6 @@ public class PurchaseOrderService implements IPurchaseOrderService {
 
         return repo.findProductsByPurchaseOrder(id);
     }
-
     /**
      * Método responsável por criar carrinho e se add produtos caso carrinho ja exista
      * @param purchaseOrder recebe-se pelo body de acordo com PurchaseOrderRequest
@@ -153,17 +145,13 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         }
         PurchaseOrder purchaseOrder1 = new PurchaseOrder(purchaseOrder, buyer.get());
         repo.save(purchaseOrder1);
-
         productPurchaseOrderService.create(new ProductPurchaseOrder(purchaseOrder1,
                 purchaseOrder.getProductDTO().getPrice(), purchaseOrder.getProductDTO().getQuantity(), batch.get().getProduct(), purchaseOrder.getBatchId()));
-
         List<ProductPurchaseOrder> productPurchaseOrder = productPurchaseOrderService.getAllByPurchaseOrder(purchaseOrder1);
         BigDecimal finalPrice = calcTotalPrice(productPurchaseOrder);
 
-
         return new PurchaseOrderResponse(purchaseOrder1.getStatus(), finalPrice, productPurchaseOrder);
     }
-
     /**
      * Método reponsável por calcular o preço total dos produtos.
      * @param productPurchaseOrder (List)
@@ -184,11 +172,10 @@ public class PurchaseOrderService implements IPurchaseOrderService {
 
      private void sendEmail(PurchaseOrder purchaseOrder) {
         String email = purchaseOrder.getBuyer().getEmail();
-        SimpleDateFormat simpleDate = new SimpleDateFormat("dd/MM/yyyy");
 
-         sendEmailService.sendEmailTo(email, "Obrigado por comprar conosco!",
-        "Confirmamos sua compra realizada no dia " + LocalDate.now()  + ". "
-        + "Seu pedido já esta sendo preparado e logo sairá pra entrega. "
+         sendEmailService.sendEmailTo(email, "Sua compra foi aprovada!",
+        "Confirmamos sua compra realizada no dia " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))  + ". "
+        + "Seu pedido já esta sendo preparado e logo irá sair para entrega. "
         + "Ficaremos à sua disposição para o que for necessário. Abraços!");
         }
 }

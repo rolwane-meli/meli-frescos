@@ -53,6 +53,9 @@ public class PurchaseOrderServiceTest {
     @Mock
     private BuyerService buyerService;
 
+    @Mock
+    private SendEmailService sendEmailService;
+
     private PurchaseOrder purchaseOrder, purchaseOrderFinished;
 
     private Batch batch;
@@ -99,7 +102,10 @@ public class PurchaseOrderServiceTest {
                 .thenReturn(Optional.of(batch));
 
         Mockito.when(repo.save(ArgumentMatchers.any()))
-                .thenReturn(ArgumentMatchers.any());
+                .thenReturn(purchaseOrder);
+
+        Mockito.doNothing().when(sendEmailService).sendEmailTo(ArgumentMatchers.any(),
+                ArgumentMatchers.any(), ArgumentMatchers.any());
 
         service.updateStatusToFinished(1L);
 

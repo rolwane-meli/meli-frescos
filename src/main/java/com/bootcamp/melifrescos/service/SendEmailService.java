@@ -1,7 +1,6 @@
 package com.bootcamp.melifrescos.service;
 
 import com.bootcamp.melifrescos.interfaces.ISendEmailService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
