@@ -69,7 +69,9 @@ public class InboundOrderService implements IInboundOrderService {
         InboundOrder newInboundOrder = new InboundOrder(id, inboundOrderDTO.getOrderDate(), sector.get(),null);
         InboundOrder savedInboundOrder = repo.save(newInboundOrder);
 
-        batchService.createAll(inboundOrderDTO.getBatchStock(), savedInboundOrder);
+        List<Batch> batches = batchService.createAll(inboundOrderDTO.getBatchStock(), savedInboundOrder);
+
+        savedInboundOrder.setBatches(batches);
 
         return savedInboundOrder;
     }

@@ -23,7 +23,7 @@ public class InboundOrderController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<InboundOrder> update(@PathVariable Long id, @RequestBody @Valid InboundOrderDTO inboundOrder) {
-        return new ResponseEntity<>(service.update(id, inboundOrder), HttpStatus.OK);
+    public ResponseEntity<InboundOrderResponseDTO> update(@PathVariable Long id, @RequestBody @Valid InboundOrderDTO inboundOrder) {
+        return new ResponseEntity<>(new InboundOrderResponseDTO(service.update(id, inboundOrder)), HttpStatus.OK);
     }
 }
