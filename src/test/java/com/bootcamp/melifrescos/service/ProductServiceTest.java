@@ -65,9 +65,9 @@ public class ProductServiceTest {
     void setup() {
         warehouse = new Warehouse(1L, "wherehouse", null, null);
         sector = new Sector(1L, "meli-ce1", 100, Type.FROZEN, warehouse, null);
-        inboundOrder = new InboundOrder(1L, LocalDateTime.now(), sector,null);
-        batch = new Batch(1L, 8.00, 5, LocalDate.now(), LocalTime.now(), 30.00, LocalDateTime.now(), new BigDecimal(7), product, inboundOrder);
-        batch1 = new Batch(2L, 6.00, 2, LocalDate.now(), LocalTime.now(), 1.00, LocalDateTime.of(2022,10,5,9,39,53), new BigDecimal(7), product, inboundOrder);
+        inboundOrder = new InboundOrder(1L, LocalDate.now(), sector,null);
+        batch = new Batch(1L, 8.00, 5, LocalDate.now(), LocalTime.now(), 30.00, LocalDate.now(), new BigDecimal(7), product, inboundOrder);
+        batch1 = new Batch(2L, 6.00, 2, LocalDate.now(), LocalTime.now(), 1.00, LocalDate.now(), new BigDecimal(7), product, inboundOrder);
         batchList.add(batch);
         batchList.add(batch1);
 

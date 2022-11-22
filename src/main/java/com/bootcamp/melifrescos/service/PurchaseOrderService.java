@@ -16,13 +16,15 @@ import com.bootcamp.melifrescos.model.ProductPurchaseOrder;
 import com.bootcamp.melifrescos.model.PurchaseOrder;
 import com.bootcamp.melifrescos.repository.IPurchaseOrderRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import javax.transaction.Transactional;
-import java.beans.Transient;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,6 +34,8 @@ public class PurchaseOrderService implements IPurchaseOrderService {
     private final IPurchaseOrderRepo repo;
     private final IProductPurchaseOrderService productPurchaseOrderService;
     private final IBatchService batchService;
+
+    private final ISendEmailService sendEmailService;
 
     /**
      * Método responsável por mudar o status da PurchaseOrder para FINISHED
@@ -60,6 +64,8 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         purchaseOrder.setStatus(OrderStatus.FINISHED);
 
         repo.save(purchaseOrder);
+
+        this.sendEmail(purchaseOrder);
     }
 
     /**
@@ -83,6 +89,7 @@ public class PurchaseOrderService implements IPurchaseOrderService {
             BatchDTO batchDTO = this.mountBatchDTO(batch);
 
             batchService.create(batchDTO);
+
         });
     }
 
@@ -174,4 +181,14 @@ public class PurchaseOrderService implements IPurchaseOrderService {
     public Optional<PurchaseOrder> getById(Long id) {
         return repo.findById(id);
     }
+
+     private void sendEmail(PurchaseOrder purchaseOrder) {
+        String email = purchaseOrder.getBuyer().getEmail();
+        SimpleDateFormat simpleDate = new SimpleDateFormat("dd/MM/yyyy");
+
+         sendEmailService.sendEmailTo(email, "Obrigado por comprar conosco!",
+        "Confirmamos sua compra realizada no dia " + LocalDate.now()  + ". "
+        + "Seu pedido já esta sendo preparado e logo sairá pra entrega. "
+        + "Ficaremos à sua disposição para o que for necessário. Abraços!");
+        }
 }

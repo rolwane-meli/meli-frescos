@@ -22,7 +22,7 @@ CREATE TABLE `buyers` (
 
 INSERT INTO `buyers` VALUES (1,'45678912300','augusto.liberato@mercadolivre.com','Augusto Liberato'),
                             (2,'32184758305','marcos@gmail.com','Marcos Silva'),
-                            (3,'04883618401','antonia@gmail.com','Antonia Bastos');
+                            (3,'04883618401','suzy.uemura@gmail.com','Suzy');
 
 
 -- ============================= SELLERS ============================= --
