@@ -1,7 +1,6 @@
 package com.bootcamp.melifrescos.repository;
 
 import com.bootcamp.melifrescos.dto.ProductListDTO;
-import com.bootcamp.melifrescos.dto.PurchaseOrderResponse;
 import com.bootcamp.melifrescos.enums.Type;
 import com.bootcamp.melifrescos.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface IProductRepo extends JpaRepository<Product, Long> {
 
