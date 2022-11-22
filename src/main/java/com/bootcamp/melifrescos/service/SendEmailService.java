@@ -12,6 +12,12 @@ public class SendEmailService implements ISendEmailService {
     @Autowired
     private JavaMailSender javaMailSender;
 
+    /**
+     * Método responsável por enviar o email para cliente
+     * @param recipient
+     * @param subject
+     * @param text
+     */
     @Override
     public void sendEmailTo(String recipient, String subject, String text) {
         SimpleMailMessage email = new SimpleMailMessage();

@@ -170,6 +170,10 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         return repo.findById(id);
     }
 
+    /**
+     * método responsável por adicionar o assunto e conteúdo no email.
+     * @param purchaseOrder
+     */
      private void sendEmail(PurchaseOrder purchaseOrder) {
         String email = purchaseOrder.getBuyer().getEmail();
 
