@@ -1,11 +1,9 @@
 package com.bootcamp.melifrescos.controller;
 
-import com.bootcamp.melifrescos.dto.ProductWithBatchesDTO;
-import com.bootcamp.melifrescos.dto.ProductListDTO;
-import com.bootcamp.melifrescos.dto.ProductRequestDTO;
-import com.bootcamp.melifrescos.dto.ProductResponseDTO;
+import com.bootcamp.melifrescos.dto.*;
 import com.bootcamp.melifrescos.enums.Type;
 import com.bootcamp.melifrescos.interfaces.IProductService;
+import com.bootcamp.melifrescos.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,5 +53,15 @@ public class ProductController {
     @GetMapping(value = "/{id}", params = {"orderByType"})
     public ResponseEntity<ProductWithBatchesDTO> getByIdWithSortedBatches(@PathVariable Long id, @RequestParam String orderByType){
         return new ResponseEntity<>(service.getByIdWithSortedBatches(id,orderByType),HttpStatus.OK);
+    }
+
+    @GetMapping("/international-market")
+    public ResponseEntity<List<ProductListBatchDTO>> getAllProductsWithConvertedPrice(@RequestParam String currency){
+        return new ResponseEntity<>(service.getAllProductsWithConvertedPrice(currency),HttpStatus.OK);
+    }
+
+    @GetMapping(value="/international-market/{id}",params = {"currency"})
+    public ResponseEntity<List<ProductListBatchDTO>> getAllProductsWithConvertedPrice(@PathVariable Long id,@RequestParam String currency){
+        return new ResponseEntity<>(service.getByProductIdWithConvertedPrice(id,currency),HttpStatus.OK);
     }
 }
