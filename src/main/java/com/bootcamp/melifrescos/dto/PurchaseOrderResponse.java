@@ -20,5 +20,5 @@ public class PurchaseOrderResponse {
     private BigDecimal totalPrice;
 
     @JsonIgnoreProperties({"purchaseOrder", "product"})
-    private List<ProductPurchaseOrder> products;
+    private List<ProductPurchaseOrder> productPurchaseOrders;
 }
