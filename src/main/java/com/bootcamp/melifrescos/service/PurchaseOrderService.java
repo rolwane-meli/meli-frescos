@@ -2,7 +2,6 @@ package com.bootcamp.melifrescos.service;
 
 import com.bootcamp.melifrescos.dto.PurchaseOrderRequest;
 import com.bootcamp.melifrescos.dto.PurchaseOrderResponse;
-import com.bootcamp.melifrescos.dto.PurchaseProductDTO;
 import com.bootcamp.melifrescos.exceptions.NoQuantityBatchProduct;
 import com.bootcamp.melifrescos.interfaces.*;
 import com.bootcamp.melifrescos.dto.BatchDTO;
@@ -20,9 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import javax.transaction.Transactional;
-import java.beans.Transient;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -141,14 +138,14 @@ public class PurchaseOrderService implements IPurchaseOrderService {
         Optional<Buyer> buyer = buyerService.getById(purchaseOrder.getBuyerId());
         Optional<Batch> batch = batchService.getById(purchaseOrder.getBatchId());
         if(batch.isEmpty()) { throw new NotFoundException("Lote não encontrado.");}
-        if (batch.get().getProductQuantity() < purchaseOrder.getProductDTO().getQuantity()) {
+        if (batch.get().getProductQuantity() < purchaseOrder.getProduct().getQuantity()) {
             throw new NoQuantityBatchProduct("O estoque não possui a quantidade de produto desejado.");
         }
         PurchaseOrder purchaseOrder1 = new PurchaseOrder(purchaseOrder, buyer.get());
         repo.save(purchaseOrder1);
 
         productPurchaseOrderService.create(new ProductPurchaseOrder(purchaseOrder1,
-                purchaseOrder.getProductDTO().getPrice(), purchaseOrder.getProductDTO().getQuantity(), batch.get().getProduct(), purchaseOrder.getBatchId()));
+                purchaseOrder.getProduct().getPrice(), purchaseOrder.getProduct().getQuantity(), batch.get().getProduct(), purchaseOrder.getBatchId()));
 
         List<ProductPurchaseOrder> productPurchaseOrder = productPurchaseOrderService.getAllByPurchaseOrder(purchaseOrder1);
         BigDecimal finalPrice = calcTotalPrice(productPurchaseOrder);
