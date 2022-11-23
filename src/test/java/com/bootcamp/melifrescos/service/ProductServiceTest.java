@@ -159,7 +159,7 @@ public class ProductServiceTest {
     void getByIdWithSortedBatches_returnGetByIdWithSortedBatchesByBatch_whenThereIsProduct(){
         Mockito.when(repo.findById(ArgumentMatchers.anyLong())).thenReturn(Optional.of(product));
 
-        ProductWithBatchesDTO productWithBatchesSorted = service.getByIdWithSortedBatches(1L,"l");
+        ProductWithBatchesDTO productWithBatchesSorted = service.getByIdWithSortedBatches(2L,"l");
 
         assertThat(productWithBatchesSorted.getName()).isEqualTo(productWithBatchesDTO.getName());
         assertThat(productWithBatchesSorted.getBatchStock().get(1).getBatchNumber()).isEqualTo(batch1.getId());
@@ -185,7 +185,7 @@ public class ProductServiceTest {
 
         assertThat(productWithBatchesSorted.getName()).isEqualTo(productWithBatchesDTO.getName());
         assertThat(productWithBatchesSorted.getBatchStock().size()).isEqualTo(batchList.size());
-        assertThat(productWithBatchesSorted.getBatchStock().get(0).getBatchNumber()).isEqualTo(batch1.getId());
+        assertThat(productWithBatchesSorted.getBatchStock().get(1).getBatchNumber()).isEqualTo(batch1.getId());
     }
 
     @Test

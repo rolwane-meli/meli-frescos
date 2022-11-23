@@ -41,6 +41,11 @@ public class WarehouseService implements IWarehouseService {
         return repo.save(warehouse);
     }
 
+    /**
+     * Método responsável por buscar Warehouse
+     * @param  id via requisicao
+     * @return Optinal de Warehouse
+     */
     @Override
     public Optional<Warehouse> getById(Long id) {
         return repo.findById(id);

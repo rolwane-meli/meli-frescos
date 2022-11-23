@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +91,7 @@ public class BatchService implements IBatchService {
      */
     @Override
     public List<BatchDTO> getAllByDueDateAndCategory(int days, Type type) {
-        LocalDateTime dueDate = LocalDateTime.from(LocalDateTime.now().plusDays(days));
+        LocalDate dueDate = LocalDate.from(LocalDate.now().plusDays(days));
         return repo.getAllByDueDateAndCategory(dueDate, type);
     }
 
@@ -102,7 +103,7 @@ public class BatchService implements IBatchService {
      */
     @Override
     public List<BatchDTO> getBatchesBySector(Long sectorId, int days){
-        LocalDateTime dueDate = LocalDateTime.now().plusDays(days);
+        LocalDate dueDate = LocalDate.now().plusDays(days);
         return repo.findBatchesBySectorAndDurDate(dueDate, sectorId);
     }
 }

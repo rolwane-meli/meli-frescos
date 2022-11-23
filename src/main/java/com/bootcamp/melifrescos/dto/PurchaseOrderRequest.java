@@ -8,7 +8,6 @@ import lombok.Setter;
 
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -27,5 +26,5 @@ public class PurchaseOrderRequest {
 
     @Valid
     @NotNull(message = "Adicione produto no carrinho.")
-    private PurchaseProductDTO productDTO;
+    private PurchaseProductDTO product;
 }

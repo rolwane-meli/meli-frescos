@@ -156,7 +156,7 @@ public class PurchaseOrderServiceTest {
 
         assertThat(response.getStatus()).isEqualTo(purchaseResponse.getStatus());
         assertThat(response.getTotalPrice()).isEqualTo(purchaseResponse.getTotalPrice());
-        assertThat(response.getProducts()).isEqualTo(purchaseResponse.getProducts());
+        assertThat(response.getProductPurchaseOrders()).isEqualTo(purchaseResponse.getProductPurchaseOrders());
 
     }
 

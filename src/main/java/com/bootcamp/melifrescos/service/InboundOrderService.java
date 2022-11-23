@@ -8,6 +8,7 @@ import com.bootcamp.melifrescos.exceptions.InvalidSectorTypeException;
 import com.bootcamp.melifrescos.exceptions.NotFoundException;
 import com.bootcamp.melifrescos.exceptions.UnavailableVolumeException;
 import com.bootcamp.melifrescos.interfaces.IInboundOrderService;
+import com.bootcamp.melifrescos.model.Batch;
 import com.bootcamp.melifrescos.model.InboundOrder;
 import com.bootcamp.melifrescos.model.Sector;
 import com.bootcamp.melifrescos.repository.IInboundOrderRepo;
@@ -38,10 +39,12 @@ public class InboundOrderService implements IInboundOrderService {
 
         this.validateInboundOrder(inboundOrderDTO, sector);
 
-        InboundOrder newInboundOrder = new InboundOrder(null,inboundOrderDTO.getOrderDate(),sector.get(),null);
+        InboundOrder newInboundOrder = new InboundOrder(null,inboundOrderDTO.getOrderDate(),sector.get(), null);
         InboundOrder inboundorder = repo.save(newInboundOrder);
 
-        batchService.createAll(inboundOrderDTO.getBatchStock(),inboundorder);
+        List<Batch> batches = batchService.createAll(inboundOrderDTO.getBatchStock(),inboundorder);
+
+        inboundorder.setBatches(batches);
 
         return inboundorder;
     }
@@ -66,7 +69,9 @@ public class InboundOrderService implements IInboundOrderService {
         InboundOrder newInboundOrder = new InboundOrder(id, inboundOrderDTO.getOrderDate(), sector.get(),null);
         InboundOrder savedInboundOrder = repo.save(newInboundOrder);
 
-        batchService.createAll(inboundOrderDTO.getBatchStock(), savedInboundOrder);
+        List<Batch> batches = batchService.createAll(inboundOrderDTO.getBatchStock(), savedInboundOrder);
+
+        savedInboundOrder.setBatches(batches);
 
         return savedInboundOrder;
     }
